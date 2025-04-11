@@ -1,5 +1,6 @@
 #Backup files
 orig_files/
+sim_data/
 
 
 # Byte-compiled / optimized / DLL files
