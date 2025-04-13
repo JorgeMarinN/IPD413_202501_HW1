@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import linregress
 
 # Path to the data file
-file_path = "sim_data/data_nmos_idvgs_VDSp9_test.txt"
+file_path = "./sim_data/Tarea_1/data_nmos_idvgs_VDSp9_test.txt"
 
 # Load the data, skipping non-numeric lines (e.g., headers)
 data = []

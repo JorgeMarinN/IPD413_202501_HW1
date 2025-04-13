@@ -57,7 +57,7 @@ plot xlog gmoverId
 *plot idn vs vdsatn
 
 *wrdata /home/designer/shared/IPD413_202501_HW1/sim_data/data_nmos_idvgs_VDSp9_test.txt idn
-wrdata /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_2025/sim_data/Tarea_1/data_nmos_idvgs_VDSp9_test.txt idn
+wrdata /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_202501/sim_data/Tarea_1/data_nmos_idvgs_VDSp9_test.txt idn
 
 
 let W = 5e-6
@@ -83,7 +83,7 @@ m=1
 model=sg13_lv_nmos
 spiceprefix=X
 }
-C {devices/code_shown.sym} 1140 20 0 0 {name=MODEL1 only_toplevel=true
+C {devices/code_shown.sym} 1140 50 0 0 {name=MODEL1 only_toplevel=true
 format="tcleval( @value )"
 value="
 

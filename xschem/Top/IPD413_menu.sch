@@ -45,7 +45,7 @@ T {- ChipUSM-vlsi-tools: https://github.com/ChipUSM/usm-vlsi-tools
 - 
 } -3750 -1010 0 0 0.4 0.4 {}
 C {title.sym} -4290 -710 0 0 {name=l1 author="Prof: Jorge Marín , Ayudante: Andrés Martínez"}
-C {code.sym} -4430 -1010 0 0 {name=MODEL only_toplevel=true
+C {code.sym} -4370 -1010 0 0 {name=MODEL only_toplevel=true
 format="tcleval( @value )"
 value="
 
@@ -65,7 +65,7 @@ value="
 *.lib $::SG13G2_MODELS/cornerCAP.lib cap_typ
 *.lib $::SG13G2_MODELS/diodes.lib
 "}
-C {code.sym} -4310 -1010 0 0 {name=Sim_Config only_toplevel=false 
+C {code.sym} -4250 -1010 0 0 {name=Sim_Config only_toplevel=false 
 
 value="
 
@@ -83,8 +83,8 @@ value="
 *.option gmin=1e-10
 .option cshunt=1e-13
 "}
-C {../Tutorial_xschem_ngspice/Tutorial.sym} -3990 -950 0 0 {name=X1}
-C {../Ayudantias/Ayudantias.sym} -3990 -850 0 0 {name=X2}
-C {../Tareas/Tareas.sym} -3990 -800 0 0 {name=X3}
-C {../Proyecto/Proyecto.sym} -3990 -750 0 0 {name=X4}
-C {../Unidades/Unidades.sym} -3990 -900 0 0 {name=X5}
+C {../Tutorial_xschem_ngspice/Tutorial.sym} -3930 -950 0 0 {name=X1}
+C {../Ayudantias/Ayudantias.sym} -3930 -850 0 0 {name=X2}
+C {../Tareas/Tareas.sym} -3930 -800 0 0 {name=X3}
+C {../Proyecto/Proyecto.sym} -3930 -750 0 0 {name=X4}
+C {../Unidades/Unidades.sym} -3930 -900 0 0 {name=X5}
