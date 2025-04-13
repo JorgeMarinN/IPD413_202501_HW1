@@ -1,2 +1,2 @@
-# IPD413_202501_HW1
-IPD413 course at USM - HW1
+# IPD413_202501
+IPD413 course at USM 
