@@ -56,6 +56,9 @@ plot gmn
 plot xlog gmoverId
 *plot idn vs vdsatn
 
+wrdata /home/designer/shared/IPD413_202501_HW1/sim_data/data_nmos_idvgs_VDSp9_test.txt idn
+
+
 let W = 5e-6
 *let gmoverId = gmn/idn
 setscale gmoverId
@@ -64,7 +67,6 @@ plot vov2
 
 
 
-*wrdata /foss/designs/UNIC-CASS_OS_analog_flow/data_nmos_idvgs_VDSp9_test.txt idn
 
 
 .endc
