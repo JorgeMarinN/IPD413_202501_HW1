@@ -57,8 +57,8 @@ plot xlog gmoverId
 *plot idn vs vdsatn
 
 *wrdata /home/designer/shared/IPD413_202501_HW1/sim_data/data_nmos_idvgs_VDSp9_test.txt idn
-wrdata /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_202501/sim_data/Tarea_1/data_nmos_idvgs_VDSp9_test.txt idn
-
+*wrdata /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_202501/sim_data/Tarea_1/data_nmos_idvgs_VDSp9_test.txt idn
+wrdata data_nmos_idvgs_VDSp9_test.txt idn
 
 let W = 5e-6
 *let gmoverId = gmn/idn
