@@ -63,8 +63,8 @@ value="
 
 
 *.param fsw = 10Meg
-.param fsw = 8Meg
-*.param fsw = 1Meg
+*.param fsw = 8Meg
+.param fsw = 1Meg
 
 .param Vo = 1.8
 .param Io = 26u
@@ -437,7 +437,7 @@ C {code.sym} -1240 -320 0 0 {name=POWER_MOS_Param only_toplevel=false
 
 value="
 .param temp=27
-.param mult_M1 = 3
+.param mult_M1 = 1
 .param w_M1 =1u 
 .param l_M1 = 1u
 .param ng_M1 = 1
