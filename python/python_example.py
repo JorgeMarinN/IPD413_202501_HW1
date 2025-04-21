@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import linregress
 
 # Path to the data file
-file_path = "./SimData/Tarea_1/data_nmos_idvgs_VDSp9_test.txt"
+file_path = "../sim_data/data_nmos_idvgs_VDSp9_test.txt"
 
 # Load the data, skipping non-numeric lines (e.g., headers)
 data = []
@@ -57,7 +57,7 @@ slope, intercept, r_value, p_value, std_err = linregress(VGS_sub, np.log10(IDS_s
 S = 1 / slope * 1000  # mV/decade
 
 # Display the subthreshold swing value
-print(f"Subthreshold Swing (S): {S:.2f} mV/decade")
+#print(f"Subthreshold Swing (S): {S:.2f} mV/decade")
 
 # Adjust layout
 plt.tight_layout()

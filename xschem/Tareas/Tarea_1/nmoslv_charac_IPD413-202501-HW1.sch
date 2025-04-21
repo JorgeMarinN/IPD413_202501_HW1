@@ -25,8 +25,8 @@ C {devices/code_shown.sym} 210 -650 0 0 {name=NGSPICE
 only_toplevel=true
 value="
 
-vgs g1 0 dc=0.9
-vds d1 0 dc=0.9
+vgs g1 0 dc=0.75
+vds d1 0 dc=0.75
 
 .control
 save all
@@ -44,31 +44,27 @@ let gmn = @n.xm1.nsg13_lv_nmos[gm]
 let vthn = @n.xm1.nsg13_lv_nmos[vth]
 let vgsn = @n.xm1.nsg13_lv_nmos[vgs]
 let vdsatn = @n.xm1.nsg13_lv_nmos[vdss]
-let vov1 = v(g1) - vthn
-let vov2 = 2*idn/gmn
+let cgg = @n.xm1.nsg13_lv_nmos[cgg]
+let cgsol = @n.xm1.nsg13_lv_nmos[cgsol]
+let cgdol = @n.xm1.nsg13_lv_nmos[cgdol]
+let vov = 2*idn/gmn
 let gmoverId = gmn/idn
+let cgg_tot = cgg + cgsol + cgdol
+let ft = 1e-9*gmn/6.28/cgg_tot
 
 plot idn
-*plot idn vs vov1 
-*plot idn vs vov2 
-*plot vov2
-plot gmn
-plot xlog gmoverId
-*plot idn vs vdsatn
+*plot ylog idn
+*plot gmn
+*plot xlog gmoverId
 
-*wrdata /home/designer/shared/IPD413_202501_HW1/sim_data/data_nmos_idvgs_VDSp9_test.txt idn
+wrdata /home/designer/shared/IPD413_202501/sim_data/data_nmos_idvgs_VDSp9_test.txt idn
 *wrdata /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_202501/sim_data/Tarea_1/data_nmos_idvgs_VDSp9_test.txt idn
-wrdata data_nmos_idvgs_VDSp9_test.txt idn
+wrdata /home/designer/shared/IPD413_202501/sim_data/data_nmos_idvgs_VDSp9_gmid-ft.txt gmoverId ft
 
-let W = 5e-6
-*let gmoverId = gmn/idn
-setscale gmoverId
-plot idn/W
-plot vov2
-
-
-
-
+*let W = 5e-6
+*setscale gmoverId
+*plot idn/W
+*plot vov
 
 .endc
 " }
@@ -83,7 +79,7 @@ m=1
 model=sg13_lv_nmos
 spiceprefix=X
 }
-C {devices/code_shown.sym} 1140 50 0 0 {name=MODEL1 only_toplevel=true
+C {devices/code_shown.sym} 790 -300 0 0 {name=MODEL1 only_toplevel=true
 format="tcleval( @value )"
 value="
 
