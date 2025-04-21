@@ -1,5 +1,5 @@
-** sch_path: /home/designer/shared/IPD413_202501/xschem/Tareas/Tarea_1/cs_amp_full_IPD413HW1_v2.sch
-**.subckt cs_amp_full_IPD413HW1_v2 vg vout
+** sch_path: /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_202501/xschem/Tareas/Tarea_1/cs_amp_full_IPD413HW1.sch
+**.subckt cs_amp_full_IPD413HW1 vg vout
 *.iopin vg
 *.iopin vout
 I1 VDD vout 785u

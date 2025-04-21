@@ -74,6 +74,9 @@ T {- La forma mas facil de crear un simbolo
 es copiar un simbolo existente y editarlo. 
 El nombre del archivo del simbolo debe ser 
 el mismo que el nombre del archivo del esquematico. } -4450 120 0 0 0.4 0.4 {}
+T {Test Bench varios:
+} -5490 -730 0 0 0.6 0.6 {}
 C {title.sym} -4340 440 0 0 {name=l1 author="Prof: Jorge Marín , Ayudante: Andrés Martínez"}
 C {../Tutorial_xschem_ngspice/Ej_path_relativo.sym} -5020 270 0 0 {name=X1}
 C {/workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_2025/xschem/Tutorial_xschem_ngspice/Ej_path_relativo.sym} -5020 320 0 0 {name=X2}
+C {../Tutorial_xschem_ngspice/Sweep_W.sym} -5330 -580 0 0 {name=X3}

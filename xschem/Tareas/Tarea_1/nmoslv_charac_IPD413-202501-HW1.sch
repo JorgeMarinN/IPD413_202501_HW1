@@ -57,9 +57,12 @@ plot idn
 *plot gmn
 *plot xlog gmoverId
 
-wrdata /home/designer/shared/IPD413_202501/sim_data/data_nmos_idvgs_VDSp9_test.txt idn
+*wrdata /home/designer/shared/IPD413_202501/sim_data/data_nmos_idvgs_VDSp9_test.txt idn
 *wrdata /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_202501/sim_data/Tarea_1/data_nmos_idvgs_VDSp9_test.txt idn
-wrdata /home/designer/shared/IPD413_202501/sim_data/data_nmos_idvgs_VDSp9_gmid-ft.txt gmoverId ft
+wrdata data_nmos_idvgs_VDSp9_test.txt idn
+
+*wrdata /home/designer/shared/IPD413_202501/sim_data/data_nmos_idvgs_VDSp9_gmid-ft.txt gmoverId ft
+wrdata data_nmos_idvgs_VDSp9_gmid-ft.txt gmoverId ft
 
 *let W = 5e-6
 *setscale gmoverId

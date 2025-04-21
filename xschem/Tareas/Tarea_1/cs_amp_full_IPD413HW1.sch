@@ -27,7 +27,7 @@ N 3750 -700 3750 -660 {
 lab=vout}
 N 3750 -510 3750 -490 {
 lab=GND}
-C {devices/code_shown.sym} 3110 -290 0 0 {name=s1 only_toplevel=false value=".option wnflag=1
+C {devices/code_shown.sym} 3140 -800 0 0 {name=s1 only_toplevel=false value=".option wnflag=1
 vsup VDD 0 1.8
 vin vg 0 dc=0.933 ac=1
 
@@ -68,7 +68,7 @@ m=1
 model=sg13_lv_nmos
 spiceprefix=X
 }
-C {devices/code_shown.sym} 3840 -270 0 0 {name=MODEL1 only_toplevel=true
+C {devices/code_shown.sym} 2850 -800 0 0 {name=MODEL1 only_toplevel=true
 format="tcleval( @value )"
 value="
 

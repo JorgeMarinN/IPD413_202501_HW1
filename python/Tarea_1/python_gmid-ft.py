@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Path to the data file
-file_path = "../sim_data/data_nmos_idvgs_VDSp9_gmid-ft.txt"
+file_path = "./SimData/Tarea_1/data_nmos_idvgs_VDSp9_gmid-ft.txt"
 
 # Load the data, skipping non-numeric lines
 data = []
