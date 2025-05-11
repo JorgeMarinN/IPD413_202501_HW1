@@ -1,0 +1,98 @@
+** sch_path: /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_202501/xschem/Ayudantias/Ayudantia_1/TB_hvMOS_switch_test.sch
+**.subckt TB_hvMOS_switch_test
+XM2 Vc2 net4 GND GND sg13_hv_nmos w={w_M2} l={l_M2} ng={ng_M2} m={mult_M2}
+XM1 Vc1 net3 Vdd Vdd sg13_hv_pmos w={w_M1} l={l_M1} ng={ng_M1} m={mult_M1}
+Vdd Vdd GND {Vdd}
+VdM2 Vdd net1 0
+.save i(vdm2)
+VdM1 net2 GND 0
+.save i(vdm1)
+Vg1 Vg_M2 GND PULSE(0 {VH} {TdR+Del} {1n} {1n} {T*D-TdR-TdF} {T} 0)
+Vg2 Vg_M1 GND PULSE(0 {VH} {Del} {1n} {1n} {T*D} {T} 0)
+R1 net1 Vc2 {R} m=1
+R2 Vc1 net2 {R} m=1
+V_IgM1 Vg_M2 net4 0
+.save i(v_igm1)
+V_IgM2 Vg_M1 net3 0
+.save i(v_igm2)
+**** begin user architecture code
+
+.lib cornerMOShv.lib mos_tt
+
+
+
+
+.param Vdd = 3.3
+.param VH = 3.3
+.param V_on = 100m
+.param I_on = 500m
+
+.param f_sw = 10Meg
+.param D = 0.5
+.param T = 1/f_sw
+.param TR = T*0.01
+.param TF = T*0.01
+.param Del = 0.05u
+* Tiempos muertos
+.param TdR = 1n
+.param TdF = 1n
+
+.param R = (Vdd - V_on)/I_on
+
+.param temp = 27
+
+
+
+
+
+
+
+.save all
+.param SimTime = 10*T
+
+.tran 1n {SimTime}
+.control
+reset
+set color0 = white
+*tran 1n 1u
+run
+let VsdM1 = v(Vdd) - v(Vc1)
+let VdsM2 = v(Vc2)
+plot i(VdM1) i(VdM2)
+plot v(Vc1) v(Vc2)
+plot v(Vg_M1) v(Vg_M2)
+plot VsdM1 VdsM2
+plot i(V_IgM1) i(V_IgM2)
+meas TRAN td_off_M1 TRIG v(Vg_M1) VAL=0.33 RISE=1 TARG VsdM1 VAL=0.33 RISE=1
+meas TRAN td_on_M1 TRIG v(Vg_M1) VAL=2.97 FALL=1 TARG VsdM1 VAL=2.97 FALL=1
+meas TRAN td_on_M2 TRIG v(Vg_M2) VAL=0.33 RISE=1 TARG VdsM2 VAL=2.97 FALL=1
+meas TRAN td_off_M2 TRIG v(Vg_M2) VAL=2.97 FALL=1 TARG VdsM2 VAL=0.33 RISE=1
+let TdR = td_off_M1 - td_on_M2
+let TdF = td_on_M1 - td_off_M2
+print TdR TdF
+.endc
+
+.end
+
+
+
+
+.param temp=27
+.param mult_M1 = 3*800
+.param w_M1 =10u
+.param l_M1 = 0.4u
+.param ng_M1 = 1
+
+.param mult_M2 = 800
+.param w_M2 =10u
+.param l_M2 =0.45u
+.param ng_M2 =1
+
+
+
+
+
+**** end user architecture code
+**.ends
+.GLOBAL GND
+.end

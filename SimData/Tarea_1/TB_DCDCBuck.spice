@@ -1,0 +1,235 @@
+** sch_path: /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_202501/xschem/Ayudantias/Ayudantia_1/TB_DCDCBuck.sch
+**.subckt TB_DCDCBuck
+Vin Vdd GND {Vin}
+Vg2 Vg_M2 GND PULSE(0 {VH} {TdR} {TR} {TF} {T*D-TdR-TdF} {T} 0)
+Vg1 Vg_M1 GND PULSE(0 {VH} 0 {TR} {TF} {T*D} {T} 0)
+V_Iin Vdd net1 0
+.save i(v_iin)
+X1 Vg_M1 Vg_M2 GND net1 Vo DCDC_Buck
+**** begin user architecture code
+
+
+.param Vin = 3.3
+.param VH = 3.3
+.param Del = 0
+
+.ic v(Vo) = 0
+*.ic i(x1.L1) = 0
+*.ic v(Vc) = 0
+
+
+*.param fsw = 10Meg
+*.param fsw = 8.5Meg
+.param fsw = 1Meg
+
+.param Vo = 1.8
+.param Io = 500m
+.param rI = 0.3
+.param rV = 0.1
+.param T = 1/fsw
+
+.param D = 1-((Vo+0.05)/(Vin-0.03))
+.param TR = 0.01*T
+.param TF = 0.01*T
+.param TdR = 1n
+.param TdF = 1n
+
+*Filtro
+.param L = Vin/(4*Io*rI*fsw)
+.param R = Vo/Io
+.param C = rI/(8*rV*R*fsw)
+
+*.option temp = 125
+*.option temp = -40
+.option temp = 27
+
+
+
+
+
+.save all
+.param tau = 4*L/R
+.csparam tau = {tau}
+.param SimTime = tau+10*T
+.csparam Sim_end = {SimTime}
+.csparam Vo = {Vo}
+.csparam T = {T}
+.csparam L = {L}
+.csparam C = {C}
+.csparam R = {R}
+.csparam fsw = {fsw}
+
+.tran 10n {SimTime} uic
+
+.control
+set color0 = white
+
+let strt = 500k
+let stp = 10Meg
+let step = 500k
+
+compose fsw_sweep start = 500k stop = 10Meg step = 500k
+
+let T_sweep = 1/fsw_sweep
+let len = 1+(stp-strt)/step
+
+let eff_sweep = vector(len)
+*let fsw_sweep = vector(len)
+let Io_sweep = vector(len)
+let Vo_sweep = vector(len)
+let Po_sweep = vector(len)
+let Pin_sweep = vector(len)
+let loss_M1_sweep = vector(len)
+let loss_M2_sweep = vector(len)
+
+let index = 0
+
+foreach T_val $&T_sweep
+	alterparam fsw = $fsw_val
+	alterparam T = $T_val
+	reset
+	save all
+	run
+	let Io = i(v.x1.V_Io)
+	*let Id_M1 = @m.x1.xm1.msky130_fd_pr__pfet_01v8[id]
+	let Id_M1 = i(V_Iin)
+	*let Id_M2 = @m.x1.xm2.msky130_fd_pr__nfet_01v8[id]
+	let Id_M2 = -i(v.x1.V_IM2)
+	let gds_M1 = @m.x1.xm1.msky130_fd_pr__pfet_01v8[gds]
+	let gds_M2 = @m.x1.xm2.msky130_fd_pr__nfet_01v8[gds]
+
+	let Po = Io*v(Vo)
+	let I_in = i(V_Iin)
+	let Pin = I_in*v(Vdd)
+	let Vsd_M1 = v(Vdd) - v(x1.Vc)
+	let Vds_M2 = v(x1.Vc)
+	let P_M1 = Vsd_M1*Id_M1
+	let P_M2 = -Vds_M2*Id_M2
+	let Ron_M1 = Vsd_M1/Id_M1
+	let Ron_M2 = Vds_M2/Id_M2
+	*let Ron_M1 = 1/gds_M1
+	*let Ron_M2 = 1/gds_M2
+
+	let Tmeas_i = {Sim_end} - 5*{T}
+	let Tmeas_end = {Sim_end}
+
+	*plot v(Vo)
+	*plot Io i(v.x1.V_IL)
+	*plot Id_M1 Id_M2
+	*plot Po Pin
+	*plot P_M1 P_M2
+	*plot v(x1.Vc)
+	*plot v(Vg_M1) v(Vg_M2)
+	*plot Ron_M1 Ron_M2
+
+	meas tran Vo_mean AVG v(Vo) FROM={Tmeas_i} TO={Tmeas_end}
+	meas tran Io_mean AVG Io FROM={Tmeas_i} TO={Tmeas_end}
+	meas tran Irms_M1 RMS Id_M1 FROM={Tmeas_i} TO={Tmeas_end}
+	meas tran Irms_M2 RMS Id_M2 FROM={Tmeas_i} TO={Tmeas_end}
+	meas tran Po_mean AVG Po FROM={Tmeas_i} TO={Tmeas_end}
+	meas tran Pin_mean AVG Pin FROM={Tmeas_i} TO={Tmeas_end}
+	meas tran P_M1_mean AVG P_M1 FROM={Tmeas_i} TO={Tmeas_end}
+	meas tran P_M2_mean AVG P_M2 FROM={Tmeas_i} TO={Tmeas_end}
+
+	let eff = 100*Po_mean/Pin_mean
+	let loss_M1 = 100*P_M1_mean/Pin_mean
+	let loss_M2 = 100*P_M2_mean/Pin_mean
+	let cond_loss_M1 = Irms_M1*Irms_M1*40m*100
+	let cond_loss_M2 = Irms_M2*Irms_M2*35m*100
+	let sumaPot = eff+loss_M1+loss_M2
+	print eff loss_M1 loss_M2 cond_loss_M1 cond_loss_M2 sumaPot
+	print tau T L C R
+
+	let eff_sweep[index] =  eff
+	let Io_sweep[index] = Io_mean
+	let Vo_sweep[index] = Vo_mean
+	let Po_sweep[index] = Po_mean
+	let Pin_sweep[index] = Pin_mean
+
+	let loss_M1_sweep[index] = loss_M1
+	let loss_M2_sweep[index] = loss_M2
+
+	let index = index + 1
+
+	*write TB_DCDCBuck.raw
+end
+*print eff loss_M1_sweep loss_M2_sweep
+print eff_sweep loss_M2_sweep loss_M1_sweep
+print fsw_sweep Io_sweep Vo_sweep
+print Po_sweep Pin_sweep
+plot eff_sweep vs fsw_sweep
+plot Io_sweep vs fsw_sweep
+plot Vo_sweep vs fsw_sweep
+plot Pin_sweep Po_sweep vs fsw_sweep
+plot loss_M1_sweep loss_M2_sweep vs fsw_sweep
+.endc
+
+
+.end
+
+
+
+
+.lib cornerMOShv.lib mos_tt
+.lib cornerMOSlv.lib mos_tt
+*.lib cornerMOShv.lib mos_ff
+*.lib cornerMOSlv.lib mos_ff
+*.lib cornerMOShv.lib mos_ss
+*.lib cornerMOSlv.lib mos_ss
+*.lib cornerMOShv.lib mos_sf
+*.lib cornerMOSlv.lib mos_sf
+*.lib cornerMOShv.lib mos_fs
+*.lib cornerMOSlv.lib mos_fs
+
+.include /opt/pdks/ihp-sg13g2/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice
+.lib /opt/pdks/ihp-sg13g2/libs.tech/ngspice/models/cornerRES.lib res_typ
+.lib /opt/pdks/ihp-sg13g2/libs.tech/ngspice/models/cornerCAP.lib cap_typ
+*.lib /opt/pdks/ihp-sg13g2/libs.tech/ngspice/models/diodes.lib
+
+
+
+.param temp=27
+.param mult_M1 = 3*800
+.param w_M1 =10u
+.param l_M1 = 0.4u
+.param ng_M1 = 1
+
+.param mult_M2 = 800
+.param w_M2 =10u
+.param l_M2 =0.45u
+.param ng_M2 =1
+
+
+
+
+
+
+
+
+**** end user architecture code
+**.ends
+
+* expanding   symbol:  ../Ayudantia_1/DCDC_Buck.sym # of pins=5
+** sym_path: /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_202501/xschem/Ayudantias/Ayudantia_1/DCDC_Buck.sym
+** sch_path: /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_202501/xschem/Ayudantias/Ayudantia_1/DCDC_Buck.sch
+.subckt DCDC_Buck VgM1 VgM2 GND Vin Vo
+*.iopin Vin
+*.ipin VgM1
+*.ipin VgM2
+*.iopin Vo
+*.iopin GND
+L1 net2 net1 {L} m=1
+C1 net1 GND {C} m=1
+V_Io net1 Vo 0
+.save i(v_io)
+V_IL Vc net2 0
+.save i(v_il)
+R1 Vo GND {R} m=1
+V_IM2 Vc net3 0
+.save i(v_im2)
+XM3 Vc VgM1 Vin Vin sg13_hv_pmos w={w_M1} l={l_M1} ng={ng_M1} m={mult_M1}
+XM1 net3 VgM2 GND GND sg13_hv_nmos w={w_M2} l={l_M2} ng={ng_M2} m={mult_M2}
+.ends
+
+.GLOBAL GND
+.end
