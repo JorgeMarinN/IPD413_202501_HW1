@@ -389,7 +389,7 @@ C {ngspice_get_value.sym} 1220 -250 0 1 {name=r37 node= VovM6
 descr="Vov= "}
 C {ngspice_get_value.sym} 1155 -225 0 1 {name=r38 node=VgsM6
 descr="Vgs= "}
-C {ngspice_get_value.sym} 885 -250 0 1 {name=r41 node=VdsMR
+C {ngspice_get_value.sym} 895 -250 0 1 {name=r41 node=VdsMR
 descr="Vds= "}
 C {ngspice_get_value.sym} 215 -375 0 1 {name=r40 node=RoM1
 descr="Ro= "}

@@ -16,17 +16,17 @@ hvMOS
 l_min_HVnmos = 0.45u; l_min_HVpmos = 0.4
 w_min_HVnmos = 0.3u;w_min_HVpmos = 0.3u;w_max = 10u;
 } -1400 -660 0 0 0.4 0.4 {}
-N -1310 -90 -1310 -60 {
+N -1250 -110 -1250 -80 {
 lab=VDD}
-N -1310 0 -1310 20 {
+N -1250 -20 -1250 0 {
 lab=GND}
 N -430 -370 -430 -340 {
 lab=VDD}
 N -290 -370 -290 -340 {
 lab=VSS}
-N -1200 -90 -1200 -60 {
+N -1140 -110 -1140 -80 {
 lab=VSS}
-N -1200 0 -1200 20 {
+N -1140 -20 -1140 0 {
 lab=GND}
 N -560 -40 -560 -20 {
 lab=VSS}
@@ -66,22 +66,29 @@ N -900 0 -900 40 { lab=VCM}
 N -270 110 -270 140 {
 lab=VSS}
 C {lab_pin.sym} -430 -368 0 0 {name=p1 sig_type=std_logic lab=VDD}
-C {vsource.sym} -1310 -30 0 0 {name=VDD value=\{VDD\} savecurrent=false}
-C {lab_pin.sym} -1310 -90 0 0 {name=p5 sig_type=std_logic lab=VDD}
-C {gnd.sym} -1310 20 0 0 {name=l2 lab=GND}
+C {vsource.sym} -1250 -50 0 0 {name=VDD value=\{VDD\} savecurrent=false}
+C {lab_pin.sym} -1250 -110 0 0 {name=p5 sig_type=std_logic lab=VDD}
+C {gnd.sym} -1250 0 0 0 {name=l2 lab=GND}
 C {code.sym} -980 -420 0 0 {name=Sim_Param only_toplevel=false 
 
 value="
 *.param VDD = 3.3
+.param VDD = 1.2
+.param VCM = 0.6
 .param Ibias = 100u
 .param Pi = 3.14159265
 .param wo = 2*Pi*60Meg
 .csparam wo = \{wo\}
 
-*.param VCM = 0.8
-*.param VAC = 60m
-.param VAC  = 10m
-.param fin  = 9.765625e5
+.param VAC = 10m
+*.param VAC  = 30m
+*.param fin  = 9.765625e5
+.param fin  = 5e4
+.param T = 1/fin
+
+.param R1 = 100k
+*.param R2 = R1/10
+.param R2 = R1/30
 
 *.ic v(Vo) = 0
 
@@ -120,24 +127,25 @@ tclcommand="xschem annotate_op"}
 C {isource.sym} -270 80 0 0 {name=I0 value=DC\{ibias\}}
 C {res.sym} -410 -470 1 0 {name=R3
 *value=5k
-value=10k
+value=\{R1\}
 footprint=1206
 device=resistor
 m=1}
 C {vsource.sym} -560 -70 0 0 {name=V3 value=DC\{VCM\}}
 C {lab_pin.sym} -290 -368 0 0 {name=p2 sig_type=std_logic lab=VSS}
-C {vsource.sym} -1200 -30 0 0 {name=VSS value=0 savecurrent=false}
-C {lab_pin.sym} -1200 -90 0 0 {name=VSS1 sig_type=std_logic lab=VSS
+C {vsource.sym} -1140 -50 0 0 {name=VSS value=0 savecurrent=false}
+C {lab_pin.sym} -1140 -110 0 0 {name=VSS1 sig_type=std_logic lab=VSS
 value=0}
-C {gnd.sym} -1200 20 0 0 {name=VSS2 lab=GND
+C {gnd.sym} -1140 0 0 0 {name=VSS2 lab=GND
 value=0}
 C {capa.sym} -650 -120 0 1 {name=C5
 m=1
+*value=3p
 value=3p
 footprint=1206
 device="ceramic capacitor"}
 C {res.sym} -820 -200 1 0 {name=R1
-value=5k
+value=\{R2\}
 footprint=1206
 device=resistor
 m=1}
@@ -168,7 +176,7 @@ C {lab_wire.sym} -900 -90 3 0 {name=l24 sig_type=std_logic lab=vsen}
 C {lab_pin.sym} -580 -200 1 0 {name=l1 sig_type=std_logic lab=VIN}
 C {lab_pin.sym} -270 140 0 0 {name=VSS8 sig_type=std_logic lab=VSS
 value=0}
-C {code.sym} -730 -400 0 0 {name=MillerOTA_Param1 only_toplevel=false spice_ignore=1
+C {code.sym} -740 -420 0 0 {name=MillerOTA_Param1 only_toplevel=false spice_ignore=1
 
 value="
 .param temp=27
@@ -216,8 +224,10 @@ value="
  
  let phase_val = 180/PI*cph(VOUT)
  let phase_margin_val = 180 + 180/PI*cph(VOUT)
+ let phase_margin_val = 360 + 180/PI*cph(VOUT)
  settype phase phase_val
  meas ac PM find phase_margin_val when vdb(VOUT)=0
+ *meas ac PM find phase_val when vdb(VOUT)=0
  meas ac GM find vdb(vout) when vp(vout)=0
  *meas ac GM2 find vdb(vout) when vp(vout)=-180
  meas ac GBW WHEN vdb(VOUT)=0
@@ -350,43 +360,7 @@ reset
 
 .end
 "}
-C {code.sym} -1140 -420 0 0 {name=MillerOTA_Param2 only_toplevel=false spice_ignore=0
-
-value="
-.param temp=27
-
-.param m_M8 = 200
-.param m_M7 = 18
-.param m_M5 = 4500
-.param w_M8 =1u 
-.param w_M7 =1u
-.param w_M5 =1u
-.param l_M875 = 1u
-
-.param m_M12 = 3
-.param w_M12 =1u
-.param l_M12 = 1u
-
-.param m_M34 = 4
-.param w_M34 =1u 
-.param l_M34 = 9u
-
-.param m_M6 = 420
-.param w_M6 =1u 
-.param l_M6 = 1u
-
-.param m_R = 1
-*.param w_R =10u 
-.param w_R = 0.15u
-.param l_R = 0.13u
-
-.param Cc = 0.1p
-.param Cl = 20p
-.csparam Cl = \{Cl\}
-.csparam Cc = \{Cc\}
-
-"}
-C {code.sym} -1290 -420 0 0 {name=MillerOTA_Param only_toplevel=false spice_ignore=1
+C {code.sym} -1280 -420 0 0 {name=MillerOTA_Param only_toplevel=false spice_ignore=1
 
 value="
 .param temp=27
@@ -425,12 +399,53 @@ C {devices/code.sym} -1155 -265 0 0 {name=Tran_sim only_toplevel=false spice_ign
 
 value="
 
+*.param SimTime = 10*T
+*.tran 0.01u \{SimTime\} uic
+*.save all v(vsen)
 .control
 reset
-  tran 0.01u 11u
+  set color0 = white
+  tran 0.01u 110u
   setplot tran1
   plot v(vsen) v(VOUT)
 .endc
 
 .end
+"}
+C {code.sym} -1130 -420 0 0 {name=MillerOTA_Param2 only_toplevel=false spice_ignore=0
+
+value="
+.param temp=27
+
+.param m_M8 = 200
+.param m_M7 = 18
+.param m_M5 = 4500
+.param w_M8 =1u 
+.param w_M7 =1u
+.param w_M5 =1u
+.param l_M875 = 1u
+
+.param m_M12 = 3
+.param w_M12 =1u
+.param l_M12 = 1u
+
+.param m_M34 = 4
+.param w_M34 =1u 
+.param l_M34 = 9u
+
+.param m_M6 = 420
+.param w_M6 =1u 
+.param l_M6 = 1u
+
+.param m_R = 1
+*.param w_R =10u 
+.param w_R = 0.15u
+.param l_R = 0.13u
+
+*.param Cc = 0.1p
+.param Cc = 0.4p
+.param Cl = 20p
+.csparam Cl = \{Cl\}
+.csparam Cc = \{Cc\}
+
 "}

@@ -238,7 +238,7 @@ footprint=1206
 device=resistor
 m=1}
 C {res.sym} -820 -200 1 0 {name=R1
-value=500
+value=2k
 footprint=1206
 device=resistor
 m=1}
@@ -270,39 +270,6 @@ C {lab_wire.sym} -1080 10 3 0 {name=l24 sig_type=std_logic lab=vsen}
 C {lab_pin.sym} -580 -200 1 0 {name=l1 sig_type=std_logic lab=VIN}
 C {lab_pin.sym} -270 140 0 0 {name=VSS8 sig_type=std_logic lab=VSS
 value=0}
-C {code.sym} -730 -400 0 0 {name=MillerOTA_Param1 only_toplevel=false spice_ignore=1
-
-value="
-.param temp=27
-
-.param m_M875 = 1
-.param w_M8 =90u 
-.param w_M7 =90u 
-.param w_M5 =90u 
-.param l_M875 = 0.45u
-
-.param m_M12 = 15
-.param w_M12 =30u 
-.param l_M12 = 0.6u
-
-.param m_M34 = 3
-.param w_M34 =12u 
-.param l_M34 = 1.85u
-
-.param m_M6 = 50
-.param w_M6 =15u 
-.param l_M6 = 0.25u
-
-.param m_R = 1
-.param w_R =5.1u 
-.param l_R = 0.15u
-
-.param Cc = 4.3p
-.param Cl = 20p
-.csparam Cl = \{Cl\}
-.csparam Cc = \{Cc\}
-
-"}
 C {lab_pin.sym} -770 -200 3 0 {name=l3 sig_type=std_logic lab=Ve}
 C {lab_pin.sym} -270 30 0 0 {name=Vibias sig_type=std_logic lab=Vibias
 value=0}
@@ -317,10 +284,11 @@ value="
  settype decibel VOUT
  *setplot ac1
  
- let phase_val = 180/PI*cph(VOUT)
+ let phase_val = (180/PI)*cph(VOUT)
  let phase_margin_val = 180 + 180/PI*cph(VOUT)
  settype phase phase_val
- meas ac PM find phase_margin_val when vdb(VOUT)=0
+ *meas ac PM find phase_margin_val when vdb(VOUT)=0
+ meas ac PM find phase_val when vdb(VOUT)=0
  meas ac GM find vdb(vout) when vp(vout)=0
  *meas ac GM2 find vdb(vout) when vp(vout)=-180
  meas ac GBW WHEN vdb(VOUT)=0
@@ -446,48 +414,12 @@ reset
   
   print Av1 Av2 Av DCG
   print BW GBW 
-  print wo Rc Cc Cc2
+  print wo Rc Cc2
    
   write TB_OTA2_OL_IPD413_202501_HW2.raw
 .endc
 
 .end
-"}
-C {code.sym} -1140 -420 0 0 {name=MillerOTA_Param2 only_toplevel=false spice_ignore=0
-
-value="
-.param temp=27
-
-.param m_M8 = 200
-.param m_M7 = 18
-.param m_M5 = 4500
-.param w_M8 =1u 
-.param w_M7 =1u
-.param w_M5 =1u
-.param l_M875 = 1u
-
-.param m_M12 = 3
-.param w_M12 =1u
-.param l_M12 = 1u
-
-.param m_M34 = 4
-.param w_M34 =1u 
-.param l_M34 = 9u
-
-.param m_M6 = 420
-.param w_M6 =1u 
-.param l_M6 = 1u
-
-.param m_R = 1
-*.param w_R =10u 
-.param w_R = 0.15u
-.param l_R = 0.13u
-
-.param Cc = 0.1p
-.param Cl = 20p
-.csparam Cl = \{Cl\}
-.csparam Cc = \{Cc\}
-
 "}
 C {code.sym} -1290 -420 0 0 {name=MillerOTA_Param only_toplevel=false spice_ignore=1
 
@@ -519,6 +451,43 @@ value="
 .param l_R = 0.13u
 
 .param Cc = 4.3p
+.param Cl = 20p
+.csparam Cl = \{Cl\}
+.csparam Cc = \{Cc\}
+
+"}
+C {code.sym} -1140 -420 0 0 {name=MillerOTA_Param1 only_toplevel=false spice_ignore=0
+
+value="
+.param temp=27
+
+.param m_M8 = 200
+.param m_M7 = 18
+.param m_M5 = 4500
+.param w_M8 =1u 
+.param w_M7 =1u
+.param w_M5 =1u
+.param l_M875 = 1u
+
+.param m_M12 = 3
+.param w_M12 =1u
+.param l_M12 = 1u
+
+.param m_M34 = 4
+.param w_M34 =1u 
+.param l_M34 = 9u
+
+.param m_M6 = 420
+.param w_M6 =1u 
+.param l_M6 = 1u
+
+.param m_R = 1
+*.param w_R =10u 
+.param w_R = 0.15u
+.param l_R = 0.13u
+
+*.param Cc = 0.1p
+.param Cc = 0.4p
 .param Cl = 20p
 .csparam Cl = \{Cl\}
 .csparam Cc = \{Cc\}
