@@ -1,5 +1,4 @@
-v {xschem version=3.4.5 file_version=1.2
-}
+v {xschem version=3.4.6 file_version=1.2}
 G {}
 K {}
 V {}
@@ -31,6 +30,7 @@ vds d1 0 dc=0.75
 .control
 save all
 *pre_osdi /home/jmarin/Documents/IHP_designs/ihp_design/psp103_nqs.osdi 
+pre_osdi /opt/pdks/ihp-sg13g2/libs.tech/ngspice/openvaf/psp103_nqs.osdi 
 *  set color0 = white
 
 save @n.xm1.nsg13_lv_nmos[ids]
