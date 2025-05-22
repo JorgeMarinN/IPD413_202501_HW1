@@ -113,14 +113,14 @@ C {code.sym} -1130 -330 0 0 {name=POWER_MOS_Param only_toplevel=false spice_igno
 
 value="
 .param temp=27
-.param mult_M1 = 1
-.param w_M1 =1u 
-.param l_M1 = 1u
+.param mult_M1 = 3
+.param w_M1 =10u 
+.param l_M1 = 0.4u
 .param ng_M1 = 1
 
 .param mult_M2 = 1
-.param w_M2 =1u 
-.param l_M2 =1u
+.param w_M2 =10u 
+.param l_M2 =0.45u
 .param ng_M2 =1
 
 

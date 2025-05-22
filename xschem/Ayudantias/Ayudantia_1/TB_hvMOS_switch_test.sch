@@ -97,14 +97,14 @@ format="tcleval( @value )"
 value="
 .lib cornerMOShv.lib mos_tt
 "}
-C {code.sym} -200 -260 0 0 {name=Sim_Param only_toplevel=false 
+C {code.sym} -180 -260 0 0 {name=Sim_Param only_toplevel=false 
 
 value="
 
 .param Vdd = 3.3
 .param VH = 3.3
 .param V_on = 100m
-.param I_on = 50m
+.param I_on = 500m
 
 .param f_sw = 10Meg
 .param D = 0.5
@@ -177,14 +177,14 @@ C {code.sym} -370 -260 0 0 {name=POWER_MOS_Param only_toplevel=false spice_ignor
 
 value="
 .param temp=27
-.param mult_M1 = 1
-.param w_M1 =1u 
-.param l_M1 = 1u
+.param mult_M1 = 3*800
+.param w_M1 =10u 
+.param l_M1 = 0.4u
 .param ng_M1 = 1
 
-.param mult_M2 = 1
-.param w_M2 =1u 
-.param l_M2 =1u
+.param mult_M2 = 800
+.param w_M2 =10u 
+.param l_M2 =0.45u
 .param ng_M2 =1
 
 

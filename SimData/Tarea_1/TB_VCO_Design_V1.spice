@@ -1,0 +1,265 @@
+** sch_path: /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD500_TD_Buck/xschem/VCO/TB_VCO_Design_V1.sch
+**.subckt TB_VCO_Design_V1
+V1 Vdd GND 3.3
+VIcont VdMP1a VdMP1 0
+.save i(vicont)
+VdMP1 VdMP1 GND 0
+VgMP1 VgMP1 GND 0
+VdMN1 VdsMN1 GND 3.3
+VIdMN1 VdsMN1 net4 0
+.save i(vidmn1)
+VIcont1 net1 VdMP1 0
+.save i(vicont1)
+VIdMN2 VdsMN1 net5 0
+.save i(vidmn2)
+VgMN1 VgMN1 GND 3.3
+VIdMN3 VdsMN1 net6 0
+.save i(vidmn3)
+VIdMN4 VdsMN1 net7 0
+.save i(vidmn4)
+VIcont2 VdMP2 VdMP1 0
+.save i(vicont2)
+VIcont3 net2 VdMP1 0
+.save i(vicont3)
+VgMP2 VgMP2 GND 3.3
+VgMN2 VgMN2 GND 3.3
+Vcont VCONT GND {Vcont}
+XMP1a net1 net1 Vdd Vdd sg13_hv_pmos w={w_MP1a} l={l_MP1a} ng=1 m=1
+XMP1 VdMP1a VgMP1 Vdd Vdd sg13_hv_pmos w={w_MP1a} l={l_MP1a} ng=1 m=1
+XMP3 net2 net2 Vdd Vdd sg13_hv_pmos w={w_MP2} l={l_MP2} ng=1 m=1
+XMP2 VdMP2 VgMP1 Vdd Vdd sg13_hv_pmos w={w_MP2} l={l_MP2} ng=1 m=1
+XMN5 net4 VdsMN1 GND GND sg13_hv_nmos w={w_MN1} l={l_MN1} ng=1 m=1
+XMN1 net5 VgMN1 GND GND sg13_hv_nmos w={w_MN1} l={l_MN1} ng=1 m=1
+XMN3 net6 VdsMN1 GND GND sg13_hv_nmos w={w_MN2} l={l_MN2} ng=1 m=1
+XMN2 net7 VgMN1 GND GND sg13_hv_nmos w={w_MN2} l={l_MN2} ng=1 m=1
+VIcont4 VdMP1b VdMP1 0
+.save i(vicont4)
+VIcont5 net3 VdMP1 0
+.save i(vicont5)
+XMP4 net3 net3 Vdd Vdd sg13_hv_pmos w={w_MP1b} l={l_MP1b} ng=1 m=1
+XMP5 VdMP1b VgMP1 Vdd Vdd sg13_hv_pmos w={w_MP1b} l={l_MP1b} ng=1 m=1
+x1 VCONT GND Vdd V_1 V_2 VCONT2 VCO_V1
+Vcont2 VCONT2 GND {Vcont2}
+**** begin user architecture code
+
+
+.save all
+
+
+.csparam start = 10
+.param Vcont = 1
+
+.control
+
+dc VdMP1 0 3.3 0.2 VgMP1 0 3.3 0.2
+let IdMP1a = i(VIcont)
+let IdMP1a_Diode = i(VIcont1)
+let  VsdMP1 = v(Vdd) - v(VdMP1)
+let VthMP1 = @n.xMP1.msky130_fd_pr__pfet_01v8[vth]
+let  VovMP1a = v(Vdd) - v(VdMP1) - VthMP1
+plot IdMP1a IdMP1a_Diode vs VsdMP1
+plot IdMP1a_Diode vs VovMP1
+
+let IdMP1b = i(VIcont4)
+let IdMP1b_Diode = i(VIcont5)
+let  VsdMP1 = v(Vdd) - v(VdMP1)
+let VthMP1 = @n.xMP1.msky130_fd_pr__pfet_01v8[vth]
+let  VovMP1b = v(Vdd) - v(VdMP1) - VthMP1
+plot IdMP1b IdMP1b_Diode vs VsdMP1
+plot IdMP1b_Diode vs VovMP1
+
+let IdMP2 = i(VIcont2)
+let IdMP2_Diode = i(VIcont3)
+let  VsdMP2 = v(Vdd) - v(VdMP2)
+let VthMP2 = @m.xMP4.msky130_fd_pr__pfet_01v8[vth]
+let  VovMP2 = v(Vdd) - v(VdMP2) - VthMP2
+*plot IdMP2 IdMP2_Diode vs VsdMP2
+*plot IdMP2_Diode vs VovMP2
+let KP1 = IdMP1_Diode/(VovMP1*VovMP1)
+let AP1 = sqrt(KP1)
+let KP2 = IdMP2_Diode/(VovMP2*VovMP2)
+let AP2 = sqrt(KP2)
+
+plot AP1 AP2
+
+*plot IdMP1_Diode IdMP2_Diode vs VsdMP1
+print VthMP1 VthMP2
+*wrdata ../../sim_data/data_VCO_design.txt IdMP1_Diode VovMP1 IdMP1 vs VsdMP1
+wrdata /workspaces/usm-vlsi-tools/shared_xserver/simulations/SKY130/IPD500-TimebasedDCDCBuck/sim_data/data_VCO_design.txt IdMP1_Diode VovMP1 IdMP1 vs VsdMP1
+wrdata /workspaces/usm-vlsi-tools/shared_xserver/simulations/SKY130/IPD500-TimebasedDCDCBuck/sim_data/data_AP1_VthMP1.txt AP1 VthMP1 AP2 VthMP2
+
+reset
+*load save_data.raw
+*show
+
+dc VdMN1 0 3.3 0.2 VgMN1 0 3.3 0.2
+let VdsMN1 = v(VdsMN1)
+let IdMN1_Diode = i(VIdMN1)
+let IdMN1 = i(VIdMN2)
+let VthMN1 = @m.xMN1.msky130_fd_pr__nfet_01v8[vth]
+let VovMN1 = VdsMN1 - VthMN1
+plot IdMN1 IdMN1_Diode vs VdsMN1
+plot IdMN1_Diode vs VovMN1
+
+let VdsMN2 = v(VdsMN1)
+let IdMN2_Diode = i(VIdMN3)
+let IdMN2 = i(VIdMN4)
+let VthMN2 = @m.xMN4.msky130_fd_pr__nfet_01v8[vth]
+let VovMN2 = VdsMN2 - VthMN2
+*plot IdMN2 IdMN2_Diode vs VdsMN2
+*plot IdMN2_Diode vs VovMN2
+
+let KN1 = IdMN1_Diode/(VovMN1*VovMN1)
+let AN1 = sqrt(KN1)
+let KN2 = IdMN2_Diode/(VovMN2*VovMN2)
+let AN2 = sqrt(KN2)
+plot AN1 AN2
+print VthMN1 VthMN2
+wrdata /workspaces/usm-vlsi-tools/shared_xserver/simulations/SKY130/IPD500-TimebasedDCDCBuck/sim_data/data_AN1_VthMN1.txt AN1 VthMN1
+
+
+reset
+
+dc Vcont 0 2 0.1
+*dc Vcont 0 3 0.1
+let Icont = i(v.x1.x1.VIcont)
+let Icont2 = i(v.x1.x1.VIcont1)
+let VCN = v(x1.x1.VCN)
+let VCP = v(x1.x1.VCP)
+let Vsg_MP3 = v(Vdd) - VCP
+
+
+plot Icont Icont2 vs Vcont
+*plot Iout vs VCP
+plot VCP vs Vcont
+plot VCN Vsg_MP3 vs Vcont
+*plot Vin vs Vcont
+.endc
+
+
+
+
+
+.lib cornerMOShv.lib mos_tt
+.lib cornerMOSlv.lib mos_tt
+*.lib cornerMOShv.lib mos_ff
+*.lib cornerMOSlv.lib mos_ff
+*.lib cornerMOShv.lib mos_ss
+*.lib cornerMOSlv.lib mos_ss
+*.lib cornerMOShv.lib mos_sf
+*.lib cornerMOSlv.lib mos_sf
+*.lib cornerMOShv.lib mos_fs
+*.lib cornerMOSlv.lib mos_fs
+
+*.include /opt/pdks/ihp-sg13g2/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice
+*.lib /opt/pdks/ihp-sg13g2/libs.tech/ngspice/models/cornerRES.lib res_typ
+*.lib /opt/pdks/ihp-sg13g2/libs.tech/ngspice/models/cornerCAP.lib cap_typ
+*.lib /opt/pdks/ihp-sg13g2/libs.tech/ngspice/models/diodes.lib
+
+
+
+.save all
+.param Vcont = 2
+
+.control
+reset
+unset filetype
+op
+alter Vcont 1
+let VCN = v(x1.x1.VCN)
+let VCP = v(x1.x1.VCP)
+let VsdMP3 = v(VDD) - v(x1.x1.VSMP4)
+let VsdMP1 = v(VDD) - VCN
+let VsgMP3 = v(VDD) - VCP
+let VsgMP1a = v(VDD) - v(VCONT)
+let VsgMP1b = v(VDD) - v(VCONT2)
+let Vth_MP1a = @n.x1.x1.xmp1a.nsg13_hv_pmos[vth]
+let Vth_MP1b = @n.x1.x1.xmp1b.nsg13_hv_pmos[vth]
+let Vth_MN1 = @n.x1.x1.xmn1.nsg13_hv_nmos[vth]
+let Vth_MN2 = @n.x1.x1.xmn2.nsg13_hv_nmos[vth]
+let Vov_MP1a = VsgMP1a - Vth_MP1a
+let Vov_MP1b = VsgMP1b - Vth_MP1b
+let Vov_MN2 =  VCN - Vth_MN2
+write TB_VCO_design_V1.raw
+.endc
+
+
+
+
+
+.param Vcont2 = 1.8
+
+.param w_MP1a =1u
+.param l_MP1a = 8u
+.param w_MP1b = 3u
+.param l_MP1b = 8u
+.param w_MP2 = 7u
+.param l_MP2 = 1u
+.param w_MP3 = 8u
+.param l_MP3 = 1u
+.param w_MP4 = 2u
+.param l_MP4 = 10u
+
+.param w_MN1 = 2u
+.param l_MN1 = 1u
+.param w_MN2 = 1u
+.param l_MN2 = 1u
+.param w_MN3 = 2u
+.param l_MN3 = 1u
+.param w_MN4 = 0.5u
+.param l_MN4 = 10u
+
+
+
+
+**** end user architecture code
+**.ends
+
+* expanding   symbol:  /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD500_TD_Buck/xschem/VCO/VCO_V1.sym #
+*+ of pins=6
+** sym_path: /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD500_TD_Buck/xschem/VCO/VCO_V1.sym
+** sch_path: /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD500_TD_Buck/xschem/VCO/VCO_V1.sch
+.subckt VCO_V1 VCONT VSS VDD V_1 V_2 VCONT2
+*.ipin VCONT
+*.iopin VDD
+*.iopin VSS
+*.opin V_1
+*.opin V_2
+*.ipin VCONT2
+x1 VDD VCONT V_1 V_5 VSS VCONT2 stage_V1
+x2 VDD VCONT V_2 V_1 VSS VCONT2 stage_V1
+x3 VDD VCONT V_3 V_2 VSS VCONT2 stage_V1
+x4 VDD VCONT V_4 V_3 VSS VCONT2 stage_V1
+x5 VDD VCONT V_5 V_4 VSS VCONT2 stage_V1
+.ends
+
+
+* expanding   symbol:  ../VCO/stage_V1.sym # of pins=6
+** sym_path: /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD500_TD_Buck/xschem/VCO/stage_V1.sym
+** sch_path: /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD500_TD_Buck/xschem/VCO/stage_V1.sch
+.subckt stage_V1 VDD VCONT VOUT VIN VSS VCONT2
+*.ipin VCONT2
+*.ipin VIN
+*.opin VOUT
+*.iopin VDD
+*.iopin VSS
+*.ipin VCONT
+XMN1 net1 net1 VSS VSS sg13_hv_nmos w={w_MN1} l={l_MN1} ng=1 m=1
+XMN2 net2 net1 VSS VSS sg13_hv_nmos w={w_MN2} l={l_MN2} ng=1 m=1
+XMN3 VdsMN3 net1 VSS VSS sg13_hv_nmos w={w_MN3} l={l_MN3} ng=1 m=1
+XMP1a VCN VCONT VDD VDD sg13_hv_pmos w={w_MP1a} l={l_MP1a} ng=1 m=1
+XMP2 VCP VCP VDD VDD sg13_hv_pmos w={w_MP2} l={l_MP2} ng=1 m=1
+XMP3 net3 VCP VDD VDD sg13_hv_pmos w={w_MP3} l={l_MP3} ng=1 m=1
+XMP7 VOUT VIN VSMP4 VDD sg13_hv_pmos w={w_MP4} l={l_MP4} ng=1 m=1
+XMN4 VOUT VIN VdsMN3 VSS sg13_hv_nmos w={w_MN4} l={l_MN4} ng=1 m=1
+XMP1b VCN VCONT2 VDD VDD sg13_hv_pmos w={w_MP1b} l={l_MP1b} ng=1 m=1
+VIcont1 VCN net1 0
+.save i(vicont1)
+VIcont2 VCP net2 0
+.save i(vicont2)
+VIcont3 net3 VSMP4 0
+.save i(vicont3)
+.ends
+
+.GLOBAL GND
+.end

@@ -67,7 +67,7 @@ value="
 .param fsw = 1Meg
 
 .param Vo = 1.8
-.param Io = 50m
+.param Io = 500m
 .param rI = 0.3
 .param rV = 0.1
 .param T = 1/fsw
@@ -90,7 +90,7 @@ value="
 "}
 C {gnd.sym} -640 -190 0 0 {name=l3 lab=GND}
 C {ammeter.sym} -640 -320 0 0 {name=V_Iin savecurrent=true spice_ignore=0}
-C {devices/code.sym} -1060 -170 0 1 {name=Transient_simulation only_toplevel=false spice_ignore=0
+C {devices/code.sym} -1060 -170 0 1 {name=Transient_simulation only_toplevel=false spice_ignore=1
 
 value="
 .save v(Vo) i(v.x1.V_Io) i(V_Iin) v(Vdd) v(x1.Vc) i(v.x1.V_IM2) i(v.x1.V_IL) v(Vg_M1) v(Vg_M2)
@@ -289,7 +289,7 @@ plot loss_M1_sweep loss_M2_sweep vs Io_sweep
 
 .end
 "}
-C {devices/code.sym} -950 -170 0 0 {name=Sweep_fsw only_toplevel=false spice_ignore=1
+C {devices/code.sym} -950 -170 0 0 {name=Sweep_fsw only_toplevel=false spice_ignore=0
 
 value="
 .save all
@@ -437,14 +437,14 @@ C {code.sym} -950 -320 0 0 {name=POWER_MOS_Param only_toplevel=false spice_ignor
 
 value="
 .param temp=27
-.param mult_M1 = 3
-.param w_M1 =1u 
-.param l_M1 = 1u
+.param mult_M1 = 3*800
+.param w_M1 =10u 
+.param l_M1 = 0.4u
 .param ng_M1 = 1
 
-.param mult_M2 = 1
-.param w_M2 =1u 
-.param l_M2 =1u
+.param mult_M2 = 800
+.param w_M2 =10u 
+.param l_M2 =0.45u
 .param ng_M2 =1
 
 

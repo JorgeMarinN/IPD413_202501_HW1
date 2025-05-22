@@ -1,0 +1,135 @@
+** sch_path: /workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_202501/xschem/Ayudantias/Ayudantia_1/TB_hvMOS_POWER_Sizing.sch
+**.subckt TB_hvMOS_POWER_Sizing
+Vg_M1 Vg_M1 GND {Vg_M1}
+Vd_M1 Vd_M1 GND 0
+XM2 net1 Vg_M2 GND GND sg13_hv_nmos w={w_M2} l={l_M2} ng={ng_M2} m={mult_M2}
+VdM1 Vdd net2 0
+.save i(vdm1)
+XM1 Vd_M1 Vg_M1 net2 net2 sg13_hv_pmos w={w_M1} l={l_M1} ng={ng_M1} m={mult_M1}
+VdM2 Vd_M2 net1 0
+.save i(vdm2)
+Vg_M2 Vg_M2 GND {Vg_M2}
+Vd_M2 Vd_M2 GND 3.3
+Vdd Vdd GND 3.3
+**** begin user architecture code
+
+
+.param temp=27
+.param mult_M1 = 3*800
+.param w_M1 =10u
+.param l_M1 = 0.4u
+.param ng_M1 = 1
+
+.param mult_M2 = 800
+.param w_M2 =10u
+.param l_M2 =0.45u
+.param ng_M2 =1
+
+
+
+
+
+
+
+.lib cornerMOShv.lib mos_tt
+.lib cornerMOSlv.lib mos_tt
+*.lib cornerMOShv.lib mos_ff
+*.lib cornerMOSlv.lib mos_ff
+*.lib cornerMOShv.lib mos_ss
+*.lib cornerMOSlv.lib mos_ss
+*.lib cornerMOShv.lib mos_sf
+*.lib cornerMOSlv.lib mos_sf
+*.lib cornerMOShv.lib mos_fs
+*.lib cornerMOSlv.lib mos_fs
+
+*.include /opt/pdks/ihp-sg13g2/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice
+*.lib /opt/pdks/ihp-sg13g2/libs.tech/ngspice/models/cornerRES.lib res_typ
+*.lib /opt/pdks/ihp-sg13g2/libs.tech/ngspice/models/cornerCAP.lib cap_typ
+*.lib /opt/pdks/ihp-sg13g2/libs.tech/ngspice/models/diodes.lib
+
+
+
+.save all
+
+.param Vg_M1 = 0
+.param Vg_M2 = 3.3
+.csparam V_on = 100m
+
+.control
+reset
+run
+dc Vd_M2 0 1 0.01
+*dc Vds 0 0.5 0.01 temp 0 27 1
+let Vds_M2 = v(Vd_M2)
+let Ids_M2 = i(VdM2)
+
+
+
+*let G_M2 = Ids_M2/(Vds_M2+0.01)
+let G_M2 = @n.xm2.nsg13_hv_nmos[gds]
+let Vth_M2 = @n.xm2.nsg13_hv_nmos[vth]
+let Ron_M2 = 1/G_M2
+let I_M2 = i(VdM2)
+let G_M22 = deriv(I_M2)
+let Ron_M22 = 1/G_M22
+
+plot Ron_M2 Ron_M22 vs Vds_M2
+plot Ids_M2 vs Vds_M2
+*plot Vth_M2 vs Vds_M2
+
+let Vds_on = {V_on}
+
+meas dc Ion_M2 FIND Ids_M2 AT={Vds_on}
+meas dc RonM2 FIND Ron_M22 AT={Vds_on}
+*write TB_hvMOS_POWER_Sizing_IPD413_202501_HW1.raw IM2 RonM2
+.endc
+
+
+.control
+reset
+run
+dc Vd_M1 2.3 3.3 0.01
+*dc Vd_M1 2 1.8 0.01 temp 0 27 1
+
+let Vsd_M1 = v(Vdd) -v(Vd_M1)
+let Isd_M1 = i(VdM1)
+
+let G_M1 = @n.xm1.nsg13_hv_pmos[gds]
+let G_M11 = deriv(Isd_M1)
+let Ron_M11 = -1/G_M11
+*let G_M1 = Isd_M1/Vsd_M1
+let Ron_M1 = 1/G_M1
+let Vth_M1 = @n.xm1.nsg13_hv_pmos[vth]
+
+plot Isd_M1 vs Vsd_M1
+plot Ron_M1 Ron_M11 vs Vsd_M1
+*plot Vth_M1 vs Vsd_M1
+
+let Vsd_on = 3.3-{V_on}
+
+meas dc Ion_M1 FIND Isd_M1 AT={Vsd_on}
+meas dc RonM1 FIND Ron_M11 AT={Vsd_on}
+
+
+.endc
+
+.control
+reset
+unset filetype
+op
+let Vth_M2 = @n.xm2.nsg13_hv_nmos[vth]
+let gds_M2 = @n.xm2.nsg13_hv_nmos[gds]
+let Vov_M2 = v(Vg_M2) - Vth_M2
+let Vth_M1 = @n.xm1.nsg13_hv_pmos[vth]
+let gds_M1 = @n.xm1.nsg13_hv_pmos[gds]
+let Vov_M1 = v(Vdd)-v(Vg_M1) - Vth_M1
+write TB_hvMOS_POWER_Sizing.raw
+.endc
+
+.end
+
+
+**** end user architecture code
+**.ends
+.GLOBAL GND
+.end
