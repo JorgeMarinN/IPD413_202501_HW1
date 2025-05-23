@@ -421,7 +421,7 @@ reset
 
 .end
 "}
-C {code.sym} -1290 -420 0 0 {name=MillerOTA_Param only_toplevel=true
+C {code.sym} -1290 -420 0 0 {name=MillerOTA_Param only_toplevel=false spice_ignore=1
 
 value="
 .param temp=27
@@ -456,7 +456,7 @@ value="
 .csparam Cc = \{Cc\}
 
 "}
-C {code.sym} -1140 -420 0 0 {name=MillerOTA_Param1 only_toplevel=false spice_ignore=1
+C {code.sym} -1140 -420 0 0 {name=MillerOTA_Param1 only_toplevel=true
 
 value="
 .param temp=27

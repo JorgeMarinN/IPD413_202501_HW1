@@ -206,31 +206,33 @@ reset
 
 .param temp=27
 
-.param m_M8 = 1
-.param m_M7 = 1
-.param m_M5 = 1
-.param w_M8 =0.15u
-.param w_M7 =0.15u
-.param w_M5 =0.15u
-.param l_M875 = 0.13u
+.param m_M8 = 200
+.param m_M7 = 18
+.param m_M5 = 4500
+.param w_M8 =1u
+.param w_M7 =1u
+.param w_M5 =1u
+.param l_M875 = 1u
 
-.param m_M12 = 1
-.param w_M12 =0.15u
-.param l_M12 = 0.13u
+.param m_M12 = 3
+.param w_M12 =1u
+.param l_M12 = 1u
 
-.param m_M34 = 1
-.param w_M34 =0.15u
-.param l_M34 = 0.13u
+.param m_M34 = 4
+.param w_M34 =1u
+.param l_M34 = 9u
 
-.param m_M6 = 1
-.param w_M6 =0.15u
-.param l_M6 = 0.13u
+.param m_M6 = 420
+.param w_M6 =1u
+.param l_M6 = 1u
 
 .param m_R = 1
-.param w_R =0.15u
+*.param w_R =10u
+.param w_R = 0.15u
 .param l_R = 0.13u
 
-.param Cc = 4.3p
+*.param Cc = 0.1p
+.param Cc = 0.4p
 .param Cl = 20p
 .csparam Cl = {Cl}
 .csparam Cc = {Cc}
