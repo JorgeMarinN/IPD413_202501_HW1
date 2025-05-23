@@ -16,17 +16,17 @@ hvMOS
 l_min_HVnmos = 0.45u; l_min_HVpmos = 0.4
 w_min_HVnmos = 0.3u;w_min_HVpmos = 0.3u;w_max = 10u;
 } -1400 -660 0 0 0.4 0.4 {}
-N -1250 -110 -1250 -80 {
+N -1310 -90 -1310 -60 {
 lab=VDD}
-N -1250 -20 -1250 0 {
+N -1310 0 -1310 20 {
 lab=GND}
 N -430 -370 -430 -340 {
 lab=VDD}
 N -290 -370 -290 -340 {
 lab=VSS}
-N -1140 -110 -1140 -80 {
+N -1200 -90 -1200 -60 {
 lab=VSS}
-N -1140 -20 -1140 0 {
+N -1200 0 -1200 20 {
 lab=GND}
 N -560 -40 -560 -20 {
 lab=VSS}
@@ -45,51 +45,45 @@ lab=VIN}
 N -650 -200 -530 -200 {
 lab=VIN}
 N -750 -470 -750 -200 {
-lab=VIN}
-N -750 -200 -650 -200 {
-lab=VIN}
+lab=Ve}
+N -750 -200 -720 -200 {
+lab=Ve}
 N -790 -200 -750 -200 {
-lab=VIN}
+lab=Ve}
 N -750 -470 -440 -470 {
-lab=VIN}
+lab=Ve}
 N -900 -200 -850 -200 {
-lab=VIN_Signal}
+lab=VCM}
 N -560 -120 -560 -100 {
 lab=VCM}
 N -560 -120 -530 -120 {
 lab=VCM}
+N -660 -200 -650 -200 {
+lab=VIN}
 N -650 -90 -650 -70 {
 lab=VSS}
-N -900 -200 -900 -160 { lab=VIN_Signal}
-N -900 -100 -900 -60 { lab=vsen}
-N -900 0 -900 40 { lab=VCM}
+N -1080 -100 -1080 -60 { lab=VIN}
+N -1080 0 -1080 40 { lab=vsen}
+N -1080 100 -1080 140 { lab=VCM}
 N -270 110 -270 140 {
 lab=VSS}
 C {lab_pin.sym} -430 -368 0 0 {name=p1 sig_type=std_logic lab=VDD}
-C {vsource.sym} -1250 -50 0 0 {name=VDD value=\{VDD\} savecurrent=false}
-C {lab_pin.sym} -1250 -110 0 0 {name=p5 sig_type=std_logic lab=VDD}
-C {gnd.sym} -1250 0 0 0 {name=l2 lab=GND}
-C {code.sym} -980 -420 0 0 {name=Sim_Param only_toplevel=false 
+C {vsource.sym} -1310 -30 0 0 {name=VDD value=\{VDD\} savecurrent=false}
+C {lab_pin.sym} -1310 -90 0 0 {name=p5 sig_type=std_logic lab=VDD}
+C {gnd.sym} -1310 20 0 0 {name=l2 lab=GND}
+C {code.sym} -940 -420 0 0 {name=Sim_Param only_toplevel=false 
 
 value="
 *.param VDD = 3.3
-.param VDD = 1.2
-.param VCM = 0.6
 .param Ibias = 100u
 .param Pi = 3.14159265
-.param fo = 60Meg
-.param wo = 2*Pi*fo
+.param wo = 2*Pi*60Meg
 .csparam wo = \{wo\}
 
-.param VAC = 10m
-*.param VAC  = 30m
-*.param fin  = 9.765625e5
-.param fin  = 0.8e5
-.param T = 1/fin
-
-.param R1 = 100k
-*.param R2 = R1/10
-.param R2 = R1/30
+*.param VCM = 0.8
+*.param VAC = 60m
+.param VAC  = 10m
+.param fin  = 9.765625e5
 
 *.ic v(Vo) = 0
 
@@ -121,32 +115,130 @@ value="
 .lib $::SG13G2_MODELS/cornerCAP.lib cap_typ
 *.lib $::SG13G2_MODELS/diodes.lib
 "}
-C {launcher.sym} -740 40 0 0 {name=h1
+C {launcher.sym} -870 -90 0 0 {name=h1
 descr="Annotate OP" 
 *tclcommand="set show_hidden_texts 1; xschem annotate_op"
 tclcommand="xschem annotate_op"}
 C {isource.sym} -270 80 0 0 {name=I0 value=DC\{ibias\}}
 C {res.sym} -410 -470 1 0 {name=R3
 *value=5k
-value=\{R1\}
+value=100k
 footprint=1206
 device=resistor
 m=1}
+C {devices/code.sym} -1275 -265 0 0 {name=OP_sim_hv only_toplevel=false spice_ignore=1
+
+value="
+
+.param VDD = 3.3
+.param VCM = 0.8
+
+.control
+reset
+  op
+  setplot op1
+  unset filetype
+  * VM1
+  let VsdM1 = v(x1.VA) - v(x1.VB)
+  let VsgM1 = v(x1.VA) - v(VCM)
+  let VthM1 = @n.x1.xm1.nsg13_hv_pmos[vth]
+  let VovM1 = VsgM1 - VthM1
+  let gmM1 = @n.x1.xm1.nsg13_hv_pmos[gm]	
+  let gdsM1 = @n.x1.xm1.nsg13_hv_pmos[gds]	
+  let RoM1 = 1/gdsM1
+  * VM2
+  let VsdM2 = v(x1.VA) - v(x1.VC)
+  let VsgM2 = v(x1.VA) - v(VIN)
+  let VthM2 = @n.x1.xm2.nsg13_hv_pmos[vth]
+  let VovM2 = VsgM2 - VthM2
+  let gmM2 = @n.x1.xm2.nsg13_hv_pmos[gm]	
+  let gdsM2 = @n.x1.xm2.nsg13_hv_pmos[gds]	
+  let RoM2 = 1/gdsM2
+  * VM3
+  let VdsM3 = v(x1.VB) - v(VSS)
+  let VthM3 = @n.x1.xm3.nsg13_hv_nmos[vth]
+  let gmM3 = @n.x1.xm3.nsg13_hv_nmos[gm]	
+  let gdsM3 = @n.x1.xm3.nsg13_hv_nmos[gds]	
+  let RoM3 = 1/gdsM3
+  * VM4
+  let VdsM4 = v(x1.VC) - v(VSS)
+  let VgsM4 = v(x1.VB) - v(VSS)
+  let VthM4 = @n.x1.xm4.nsg13_hv_nmos[vth]
+  let VovM4 = VgsM4 - VthM4
+  let gmM4 = @n.x1.xm4.nsg13_hv_nmos[gm]	
+  let gdsM4 = @n.x1.xm4.nsg13_hv_nmos[gds]	
+  let RoM4 = 1/gdsM4
+  * VM5
+  let VsdM5 = v(VDD) - v(VOUT)
+  let VsgM5 = v(VDD) - v(Vibias)
+  let VthM5 = @n.x1.xm5.nsg13_hv_pmos[vth]
+  let VovM5 = VsgM5 - VthM5
+  let gmM5 = @n.x1.xm5.nsg13_hv_pmos[gm]	
+  let gdsM5 = @n.x1.xm5.nsg13_hv_pmos[gds]	
+  let RoM5 = 1/gdsM5
+  * VM6
+  let VdsM6 = v(VOUT) - v(VSS)
+  let VgsM6 = v(x1.VC) - v(VSS)
+  let VthM6 = @n.x1.xm6.nsg13_hv_nmos[vth]
+  let VovM6 = VgsM6 - VthM6
+  let gmM6 = @n.x1.xm6.nsg13_hv_nmos[gm]	
+  let gdsM6 = @n.x1.xm6.nsg13_hv_nmos[gds]	
+  let CggM6 = @n.x1.xm6.nsg13_hv_nmos[cgg]	
+  let RoM6 = 1/gdsM6
+  * VM7
+  let VsdM7 = v(VDD) - v(x1.VA)
+  let VsgM7 = v(VDD) - v(Vibias)
+  let VthM7 = @n.x1.xm7.nsg13_hv_pmos[vth]
+  let VovM7 = VsgM7 - VthM7
+  let gmM7 = @n.x1.xm7.nsg13_hv_pmos[gm]	
+  let gdsM7 = @n.x1.xm7.nsg13_hv_pmos[gds]	
+  let RoM7 = 1/gdsM7
+  * VM8
+  let VsdM8 = v(VDD) - v(Vibias)
+  let VthM8 = @n.x1.xm8.nsg13_hv_pmos[vth]
+  let VovM8 = VsgM8 - VthM8
+  let gmM8 = @n.x1.xm8.nsg13_hv_pmos[gm]	
+  let gdsM8 = @n.x1.xm8.nsg13_hv_pmos[gds]	
+  let RoM8 = 1/gdsM8
+  * VMR
+  let VdsMR = v(x1.VC) - v(x1.VsMR)
+  let gdsMR = @n.x1.xm9.nsg13_hv_nmos[gds]
+  let RoMR = 1/gdsMR
+
+  let Av1 = gmM1/(gdsM2+gdsM4)
+  let Av2 = gmM6/(gdsM5+gdsM6)
+  let Av = Av1*Av2
+  let BW = (gdsM2+gdsM4)/(2*pi*Av2*\{Cc\})
+  let GBW = gmM1/(2*pi*\{Cc\})
+  *let fnd = gmM6/(2*pi*\{Cl\})
+  
+  print Av1 Av2 Av
+  print BW GBW 
+   
+  write TB_OTA2_OL_IPD413_202501_HW2.raw
+.endc
+
+.end
+"}
 C {vsource.sym} -560 -70 0 0 {name=V3 value=DC\{VCM\}}
 C {lab_pin.sym} -290 -368 0 0 {name=p2 sig_type=std_logic lab=VSS}
-C {vsource.sym} -1140 -50 0 0 {name=VSS value=0 savecurrent=false}
-C {lab_pin.sym} -1140 -110 0 0 {name=VSS1 sig_type=std_logic lab=VSS
+C {vsource.sym} -1200 -30 0 0 {name=VSS value=0 savecurrent=false}
+C {lab_pin.sym} -1200 -90 0 0 {name=VSS1 sig_type=std_logic lab=VSS
 value=0}
-C {gnd.sym} -1140 0 0 0 {name=VSS2 lab=GND
+C {gnd.sym} -1200 20 0 0 {name=VSS2 lab=GND
 value=0}
 C {capa.sym} -650 -120 0 1 {name=C5
 m=1
-*value=3p
 value=3p
 footprint=1206
 device="ceramic capacitor"}
+C {res.sym} -690 -200 1 0 {name=R2
+value=1G
+footprint=1206
+device=resistor
+m=1}
 C {res.sym} -820 -200 1 0 {name=R1
-value=\{R2\}
+value=2k
 footprint=1206
 device=resistor
 m=1}
@@ -156,7 +248,7 @@ value=\{Cl\}
 footprint=1206
 device="ceramic capacitor"}
 C {lab_pin.sym} -40 -58 0 1 {name=p4 sig_type=std_logic lab=VSS}
-C {lab_pin.sym} -900 -200 0 0 {name=VSS3 sig_type=std_logic lab=VIN_Signal
+C {lab_pin.sym} -900 -200 0 0 {name=VSS3 sig_type=std_logic lab=VCM
 value=0}
 C {lab_pin.sym} -560 -120 0 0 {name=VSS4 sig_type=std_logic lab=VCM
 value=0}
@@ -166,142 +258,21 @@ C {lab_pin.sym} -560 -20 0 0 {name=VSS6 sig_type=std_logic lab=VSS
 value=0}
 C {lab_pin.sym} -40 -210 0 0 {name=VSS7 sig_type=std_logic lab=VOUT
 value=0}
-C {vsource.sym} -900 -30 0 0 {name=V4 value="sin(0 \{VAC\} \{fin\}) dc 0 ac 1"}
-C {capa.sym} -900 -130 2 0 {name=C4
+C {vsource.sym} -1080 70 0 0 {name=V4 value="sin(0 \{VAC\} \{fin\}) dc 0 ac 1"}
+C {capa.sym} -1080 -30 2 0 {name=C4
 m=1
 value=1
 footprint=1206
 device="ceramic capacitor"}
-C {lab_pin.sym} -900 40 3 0 {name=l20 sig_type=std_logic lab=VCM}
-C {lab_wire.sym} -900 -90 3 0 {name=l24 sig_type=std_logic lab=vsen}
+C {lab_pin.sym} -1080 140 3 0 {name=l20 sig_type=std_logic lab=VCM}
+C {lab_pin.sym} -1080 -100 2 1 {name=l21 sig_type=std_logic lab=VIN}
+C {lab_wire.sym} -1080 10 3 0 {name=l24 sig_type=std_logic lab=vsen}
 C {lab_pin.sym} -580 -200 1 0 {name=l1 sig_type=std_logic lab=VIN}
 C {lab_pin.sym} -270 140 0 0 {name=VSS8 sig_type=std_logic lab=VSS
 value=0}
-C {code.sym} -740 -420 0 0 {name=MillerOTA_Param1 only_toplevel=false spice_ignore=1
-
-value="
-.param temp=27
-
-.param m_M875 = 1
-.param w_M8 =90u 
-.param w_M7 =90u 
-.param w_M5 =90u 
-.param l_M875 = 0.45u
-
-.param m_M12 = 15
-.param w_M12 =30u 
-.param l_M12 = 0.6u
-
-.param m_M34 = 3
-.param w_M34 =12u 
-.param l_M34 = 1.85u
-
-.param m_M6 = 50
-.param w_M6 =15u 
-.param l_M6 = 0.25u
-
-.param m_R = 1
-.param w_R =5.1u 
-.param l_R = 0.15u
-
-.param Cc = 4.3p
-.param Cl = 20p
-.csparam Cl = \{Cl\}
-.csparam Cc = \{Cc\}
-
-"}
+C {lab_pin.sym} -770 -200 3 0 {name=l3 sig_type=std_logic lab=Ve}
 C {lab_pin.sym} -270 30 0 0 {name=Vibias sig_type=std_logic lab=Vibias
 value=0}
-C {/workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_202501/xschem/Tareas/Tarea_2/OTA2_lv.sym} -370 -160 0 0 {name=x1}
-C {code.sym} -1280 -420 0 0 {name=MillerOTA_Param only_toplevel=false spice_ignore=1
-
-value="
-.param temp=27
-
-.param m_M8 = 1
-.param m_M7 = 1
-.param m_M5 = 1
-.param w_M8 =0.15u 
-.param w_M7 =0.15u
-.param w_M5 =0.15u
-.param l_M875 = 0.13u
-
-.param m_M12 = 1 
-.param w_M12 =0.15u
-.param l_M12 = 0.13u
-
-.param m_M34 = 1
-.param w_M34 =0.15u 
-.param l_M34 = 0.13u
-
-.param m_M6 = 1
-.param w_M6 =0.15u 
-.param l_M6 = 0.13u
-
-.param m_R = 1
-.param w_R =0.15u 
-.param l_R = 0.13u
-
-.param Cc = 4.3p
-.param Cl = 20p
-.csparam Cl = \{Cl\}
-.csparam Cc = \{Cc\}
-
-"}
-C {devices/code.sym} -1155 -265 0 0 {name=Tran_sim only_toplevel=false spice_ignore=0
-
-value="
-
-*.param SimTime = 10*T
-*.tran 0.01u \{SimTime\} uic
-*.save all v(vsen)
-.control
-reset
-  set color0 = white
-  tran 0.01u 110u
-  setplot tran1
-  plot v(vsen) v(VOUT)
-.endc
-
-.end
-"}
-C {code.sym} -1130 -420 0 0 {name=MillerOTA_Param2 only_toplevel=false spice_ignore=0
-
-value="
-.param temp=27
-
-.param m_M8 = 200
-.param m_M7 = 18
-.param m_M5 = 4500
-.param w_M8 =1u 
-.param w_M7 =1u
-.param w_M5 =1u
-.param l_M875 = 1u
-
-.param m_M12 = 3
-.param w_M12 =1u
-.param l_M12 = 1u
-
-.param m_M34 = 4
-.param w_M34 =1u 
-.param l_M34 = 9u
-
-.param m_M6 = 420
-.param w_M6 =1u 
-.param l_M6 = 1u
-
-.param m_R = 1
-*.param w_R =10u 
-.param w_R = 0.15u
-.param l_R = 0.13u
-
-*.param Cc = 0.1p
-.param Cc = 0.4p
-.param Cl = 20p
-.csparam Cl = \{Cl\}
-.csparam Cc = \{Cc\}
-
-"}
 C {devices/code.sym} -1395 -265 0 0 {name=AC_sim only_toplevel=false spice_ignore=0
 
 value="
@@ -354,7 +325,8 @@ value="
 
 .end
 "}
-C {devices/code.sym} -1275 -265 0 0 {name=OP_sim_lv only_toplevel=false spice_ignore=0
+C {/workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_202501/xschem/Tareas/Tarea_2/OTA2_lv.sym} -370 -160 0 0 {name=x1}
+C {devices/code.sym} -1125 -255 0 0 {name=OP_sim_lv only_toplevel=false spice_ignore=0
 
 value="
 
@@ -397,7 +369,8 @@ reset
   let gdsM4 = @n.x1.xm4.nsg13_lv_nmos[gds]	
   let RoM4 = 1/gdsM4
   * VM5
-  let VsdM5 = v(VDD) - v(VOUT)
+  
+  let VsdM5 = v(VDD) - v(x1.VA)
   let VsgM5 = v(VDD) - v(Vibias)
   let VthM5 = @n.x1.xm5.nsg13_lv_pmos[vth]
   let VovM5 = VsgM5 - VthM5
@@ -414,7 +387,7 @@ reset
   let CggM6 = @n.x1.xm6.nsg13_lv_nmos[cgg]	
   let RoM6 = 1/gdsM6
   * VM7
-  let VsdM7 = v(VDD) - v(x1.VA)
+  let VsdM7 = v(VDD) - v(VOUT)
   let VsgM7 = v(VDD) - v(Vibias)
   let VthM7 = @n.x1.xm7.nsg13_lv_pmos[vth]
   let VovM7 = VsgM7 - VthM7
@@ -437,23 +410,166 @@ reset
   let Rc = 1/gmM6
 
   let Av1 = gmM1/(gdsM2+gdsM4)
-  let Av2 = gmM6/(gdsM5+gdsM6)
+  let Av2 = gmM6/(gdsM7+gdsM6)
   let Av = Av1*Av2
   let BW = (gdsM2+gdsM4)/(2*pi*Av2*\{Cc\})
   *let w1 = 1/((gdsM2+gdsM4)*gmM6*(gdsM6+gdsM7)*\{Cc\})
   *let w22 = gmM6/(CggM6+\{Cl\})
-  let w2 = gmM6/((\{Cl\})*(1+CggM6/\{Cc\}))
+  *let w2 = gmM6/((\{Cl\})*(1+CggM6/\{Cc\}))
+  let w2 = gmM6/(2*pi*(\{Cl\})*(1+CggM6/\{Cc\}))
   let GBW = gmM1/(2*pi*\{Cc\})
   *let GBW2 = gmM1/\{Cc\}
   let DCG = 20*log10(Av)
   *let fnd = gmM6/(2*pi*\{Cl\})
   
   print Av1 Av2 Av DCG
-  print BW GBW w2 
+  print BW GBW w2
   print Rc Cc2
    
-  write TB_OTA2_CL_IPD413_202501_HW2.raw
+  write TB_OTA2_OL.raw
 .endc
 
 .end
+"}
+C {code.sym} -1290 -420 0 0 {name=MillerOTA_Param only_toplevel=false spice_ignore=1
+
+value="
+.param temp=27
+
+.param m_M8 = 1
+.param m_M7 = 1
+.param m_M5 = 1
+.param w_M8 =0.15u 
+.param w_M7 =0.15u
+.param w_M5 =0.15u
+.param l_M875 = 0.13u
+
+.param m_M12 = 1 
+.param w_M12 =0.15u
+.param l_M12 = 0.13u
+
+.param m_M34 = 1
+.param w_M34 =0.15u 
+.param l_M34 = 0.13u
+
+.param m_M6 = 1
+.param w_M6 =0.15u 
+.param l_M6 = 0.13u
+
+.param m_R = 1
+.param w_R =0.15u 
+.param l_R = 0.13u
+
+.param Cc = 4.3p
+.param Cl = 20p
+.csparam Cl = \{Cl\}
+.csparam Cc = \{Cc\}
+
+"}
+C {code.sym} -740 -640 0 0 {name=MillerOTA_6Mhz60dB only_toplevel=false spice_ignore=1
+
+value="
+.param temp=27
+
+.param m_M8 = 200
+.param m_M5 = 18
+.param m_M7 = 4500
+.param w_M8 =1u 
+.param w_M7 =1u
+.param w_M5 =1u
+.param l_M875 = 1u
+
+.param m_M12 = 3
+.param w_M12 =1u
+.param l_M12 = 1u
+
+.param m_M34 = 4
+.param w_M34 =1u 
+.param l_M34 = 9u
+
+.param m_M6 = 420
+.param w_M6 =1u 
+.param l_M6 = 1u
+
+.param m_R = 1
+*.param w_R =10u 
+.param w_R = 0.15u
+.param l_R = 0.13u
+
+*.param Cc = 0.1p
+.param Cc = 0.4p
+.param Cl = 20p
+.csparam Cl = \{Cl\}
+.csparam Cc = \{Cc\}
+
+"}
+C {code.sym} -550 -640 0 0 {name=MillerOTA_60MHz60dB only_toplevel=false spice_ignore=1
+
+value="
+.param temp=27
+
+.param m_M8 = 500
+.param m_M5 = 40
+.param m_M7 = 11000
+.param w_M8 =0.5u 
+.param w_M7 =0.5u
+.param w_M5 =0.5u
+.param l_M875 = 1u
+
+.param m_M12 = 40
+.param w_M12 =0.3u
+.param l_M12 = 0.3u
+
+.param m_M34 = 1
+.param w_M34 =0.15u 
+.param l_M34 = 0.5u
+
+.param m_M6 = 10
+.param w_M6 =10u 
+.param l_M6 = 0.13u
+
+.param m_R = 1
+.param w_R =0.15u 
+.param l_R = 0.13u
+
+.param Cc = 0.1p
+.param Cl = 20p
+.csparam Cl = \{Cl\}
+.csparam Cc = \{Cc\}
+
+"}
+C {code.sym} -1120 -420 0 0 {name=MillerOTA_Tarea2 only_toplevel=false spice_ignore=0
+
+value="
+.param temp=27
+
+.param m_M8 = 15
+.param m_M7 = 150
+.param m_M5 = 2
+.param w_M8 =10u 
+.param w_M7 = 10u
+.param w_M5 = 10u
+.param l_M875 = 1u
+
+.param m_M12 = 2
+.param w_M12 =5*1.5u
+.param l_M12 = 0.5*1.5u
+
+.param m_M34 = 2
+.param w_M34 =0.3*1.4u 
+.param l_M34 = 0.5*1.4u
+
+.param m_M6 = 10
+.param w_M6 =10u 
+.param l_M6 = 0.18u
+
+.param m_R = 1
+.param w_R =0.15u 
+.param l_R = 0.13u
+
+.param Cc = 0.1p
+.param Cl = 5p
+.csparam Cl = \{Cl\}
+.csparam Cc = \{Cc\}
+
 "}

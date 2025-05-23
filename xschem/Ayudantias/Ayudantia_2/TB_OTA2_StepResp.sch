@@ -61,7 +61,7 @@ lab=VCM}
 N -650 -90 -650 -70 {
 lab=VSS}
 N -900 -200 -900 -160 { lab=VIN_Signal}
-N -900 -100 -900 -60 { lab=vsen}
+N -900 -100 -900 -60 { lab=vstep}
 N -900 0 -900 40 { lab=VCM}
 N -270 110 -270 140 {
 lab=VSS}
@@ -77,15 +77,16 @@ value="
 .param VCM = 0.6
 .param Ibias = 100u
 .param Pi = 3.14159265
-.param fo = 60Meg
-.param wo = 2*Pi*fo
+.param wo = 2*Pi*60Meg
 .csparam wo = \{wo\}
 
 .param VAC = 10m
 *.param VAC  = 30m
 *.param fin  = 9.765625e5
-.param fin  = 0.8e5
+.param fin  = 1e4
 .param T = 1/fin
+
+.param vstep = 10m
 
 .param R1 = 100k
 *.param R2 = R1/10
@@ -166,14 +167,13 @@ C {lab_pin.sym} -560 -20 0 0 {name=VSS6 sig_type=std_logic lab=VSS
 value=0}
 C {lab_pin.sym} -40 -210 0 0 {name=VSS7 sig_type=std_logic lab=VOUT
 value=0}
-C {vsource.sym} -900 -30 0 0 {name=V4 value="sin(0 \{VAC\} \{fin\}) dc 0 ac 1"}
 C {capa.sym} -900 -130 2 0 {name=C4
 m=1
 value=1
 footprint=1206
 device="ceramic capacitor"}
 C {lab_pin.sym} -900 40 3 0 {name=l20 sig_type=std_logic lab=VCM}
-C {lab_wire.sym} -900 -90 3 0 {name=l24 sig_type=std_logic lab=vsen}
+C {lab_wire.sym} -900 -90 3 0 {name=l24 sig_type=std_logic lab=vstep}
 C {lab_pin.sym} -580 -200 1 0 {name=l1 sig_type=std_logic lab=VIN}
 C {lab_pin.sym} -270 140 0 0 {name=VSS8 sig_type=std_logic lab=VSS
 value=0}
@@ -256,11 +256,12 @@ value="
 *.tran 0.01u \{SimTime\} uic
 *.save all v(vsen)
 .control
-reset
+
   set color0 = white
-  tran 0.01u 110u
+  tran 0.1u 100u
   setplot tran1
-  plot v(vsen) v(VOUT)
+  *plot v(vsen) v(VOUT)
+  plot v(vstep) v(VIN_signal) v(VOUT)
 .endc
 
 .end
@@ -302,158 +303,4 @@ value="
 .csparam Cc = \{Cc\}
 
 "}
-C {devices/code.sym} -1395 -265 0 0 {name=AC_sim only_toplevel=false spice_ignore=0
-
-value="
-
-.control
-  set color0 = white
-  *IPD413
- ac dec 200 1 1000Meg
- settype decibel VOUT
- *setplot ac1
- 
- let phase_val = (180/PI)*cph(VOUT)
- let phase_margin_val = 180 + 180/PI*cph(VOUT)
- settype phase phase_val
- *meas ac PM find phase_margin_val when vdb(VOUT)=0
- meas ac PM find phase_val when vdb(VOUT)=0
- meas ac GM find vdb(vout) when vp(vout)=0
- *meas ac GM2 find vdb(vout) when vp(vout)=-180
- meas ac GBW WHEN vdb(VOUT)=0
- meas ac DCG find vdb(vout) at=1
- let DCG_BW = \{DCG\} - 3
- meas ac BW WHEN vdb(VOUT)=\{DCG_BW\}
- 
- let Av = 10^(DCG/20)
- print Av 
-
- plot vdb(VOUT)
- plot phase_val
- plot phase_val vdb(VOUT)
-
-
- *wrdata /foss/designs/IPD413_2023_HW3_git/Data/data_phaseOTA1.dat phase_val
- *wrdata /foss/designs/IPD413_2023_HW3_git/Data/data_VdbOTA1.dat vdb(out)
-
- reset
-  *DACI
-  *ac dec 100 1 10G
-  *setplot ac1
-  *meas ac GBW when vdb(vout)=0
-  *meas ac DCG find vdb(vout) at=1
-  *meas ac PM find vp(vout) when vdb(vout)=0
-  *print PM*180/PI
-  *meas ac GM find vdb(vout) when vp(vout)=0
-
-  *plot vdb(vout) 
-  *plot \{vp(vout)*180/PI\}
-  *plot vdb(vout) \{vp(vout)*180/PI\}
-.endc
-
-
-.end
-"}
-C {devices/code.sym} -1275 -265 0 0 {name=OP_sim_lv only_toplevel=false spice_ignore=0
-
-value="
-
-.param VDD = 1.2
-.param VCM = 0.6
-
-.control
-reset
-  op
-  setplot op1
-  unset filetype
-  * VM1
-  let VsdM1 = v(x1.VA) - v(x1.VB)
-  let VsgM1 = v(x1.VA) - v(VCM)
-  let VthM1 = @n.x1.xm1.nsg13_lv_pmos[vth]
-  let VovM1 = VsgM1 - VthM1
-  let gmM1 = @n.x1.xm1.nsg13_lv_pmos[gm]	
-  let gdsM1 = @n.x1.xm1.nsg13_lv_pmos[gds]	
-  let RoM1 = 1/gdsM1
-  * VM2
-  let VsdM2 = v(x1.VA) - v(x1.VC)
-  let VsgM2 = v(x1.VA) - v(VIN)
-  let VthM2 = @n.x1.xm2.nsg13_lv_pmos[vth]
-  let VovM2 = VsgM2 - VthM2
-  let gmM2 = @n.x1.xm2.nsg13_lv_pmos[gm]	
-  let gdsM2 = @n.x1.xm2.nsg13_lv_pmos[gds]	
-  let RoM2 = 1/gdsM2
-  * VM3
-  let VdsM3 = v(x1.VB) - v(VSS)
-  let VthM3 = @n.x1.xm3.nsg13_lv_nmos[vth]
-  let gmM3 = @n.x1.xm3.nsg13_lv_nmos[gm]	
-  let gdsM3 = @n.x1.xm3.nsg13_lv_nmos[gds]	
-  let RoM3 = 1/gdsM3
-  * VM4
-  let VdsM4 = v(x1.VC) - v(VSS)
-  let VgsM4 = v(x1.VB) - v(VSS)
-  let VthM4 = @n.x1.xm4.nsg13_lv_nmos[vth]
-  let VovM4 = VgsM4 - VthM4
-  let gmM4 = @n.x1.xm4.nsg13_lv_nmos[gm]	
-  let gdsM4 = @n.x1.xm4.nsg13_lv_nmos[gds]	
-  let RoM4 = 1/gdsM4
-  * VM5
-  let VsdM5 = v(VDD) - v(VOUT)
-  let VsgM5 = v(VDD) - v(Vibias)
-  let VthM5 = @n.x1.xm5.nsg13_lv_pmos[vth]
-  let VovM5 = VsgM5 - VthM5
-  let gmM5 = @n.x1.xm5.nsg13_lv_pmos[gm]	
-  let gdsM5 = @n.x1.xm5.nsg13_lv_pmos[gds]	
-  let RoM5 = 1/gdsM5
-  * VM6
-  let VdsM6 = v(VOUT) - v(VSS)
-  let VgsM6 = v(x1.VC) - v(VSS)
-  let VthM6 = @n.x1.xm6.nsg13_lv_nmos[vth]
-  let VovM6 = VgsM6 - VthM6
-  let gmM6 = @n.x1.xm6.nsg13_lv_nmos[gm]	
-  let gdsM6 = @n.x1.xm6.nsg13_lv_nmos[gds]	
-  let CggM6 = @n.x1.xm6.nsg13_lv_nmos[cgg]	
-  let RoM6 = 1/gdsM6
-  * VM7
-  let VsdM7 = v(VDD) - v(x1.VA)
-  let VsgM7 = v(VDD) - v(Vibias)
-  let VthM7 = @n.x1.xm7.nsg13_lv_pmos[vth]
-  let VovM7 = VsgM7 - VthM7
-  let gmM7 = @n.x1.xm7.nsg13_lv_pmos[gm]	
-  let gdsM7 = @n.x1.xm7.nsg13_lv_pmos[gds]	
-  let RoM7 = 1/gdsM7
-  * VM8
-  let VsdM8 = v(VDD) - v(Vibias)
-  let VthM8 = @n.x1.xm8.nsg13_lv_pmos[vth]
-  let VovM8 = VsdM8 - VthM8
-  let gmM8 = @n.x1.xm8.nsg13_lv_pmos[gm]	
-  let gdsM8 = @n.x1.xm8.nsg13_lv_pmos[gds]	
-  let RoM8 = 1/gdsM8
-  * VMR
-  let VdsMR = v(x1.VC) - v(x1.VsMR)
-  let gdsMR = @n.x1.xm9.nsg13_lv_nmos[gds]
-  let RoMR = 1/gdsMR
-  
-  let Cc2 = gmM2/\{wo\}
-  let Rc = 1/gmM6
-
-  let Av1 = gmM1/(gdsM2+gdsM4)
-  let Av2 = gmM6/(gdsM5+gdsM6)
-  let Av = Av1*Av2
-  let BW = (gdsM2+gdsM4)/(2*pi*Av2*\{Cc\})
-  *let w1 = 1/((gdsM2+gdsM4)*gmM6*(gdsM6+gdsM7)*\{Cc\})
-  *let w22 = gmM6/(CggM6+\{Cl\})
-  let w2 = gmM6/((\{Cl\})*(1+CggM6/\{Cc\}))
-  let GBW = gmM1/(2*pi*\{Cc\})
-  *let GBW2 = gmM1/\{Cc\}
-  let DCG = 20*log10(Av)
-  *let fnd = gmM6/(2*pi*\{Cl\})
-  
-  print Av1 Av2 Av DCG
-  print BW GBW w2 
-  print Rc Cc2
-   
-  write TB_OTA2_CL_IPD413_202501_HW2.raw
-.endc
-
-.end
-"}
+C {vsource.sym} -900 -30 0 0 {name=V1 value="PULSE(\{-1*vstep\} \{vstep\} 0.0 1p 1p \{T/2\} \{T\}) DC 1 AC 0"}

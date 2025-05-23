@@ -30,16 +30,16 @@ L 4 -60 -560 -50 -560 {}
 L 4 -60 -640 70 -640 {}
 L 4 -60 -640 -60 -560 {}
 L 4 70 -640 70 -560 {}
-L 4 1110 -550 1230 -550 {}
-L 4 1100 -550 1110 -550 {}
-L 4 1100 -650 1230 -650 {}
-L 4 1100 -650 1100 -550 {}
-L 4 1290 -650 1290 -550 {}
-L 4 625 -540 745 -540 {}
-L 4 615 -540 625 -540 {}
-L 4 615 -640 745 -640 {}
-L 4 615 -640 615 -540 {}
-L 4 745 -640 745 -540 {}
+L 4 640 -540 760 -540 {}
+L 4 630 -540 640 -540 {}
+L 4 630 -640 760 -640 {}
+L 4 630 -640 630 -540 {}
+L 4 760 -640 760 -540 {}
+L 4 1115 -540 1235 -540 {}
+L 4 1105 -540 1115 -540 {}
+L 4 1105 -640 1235 -640 {}
+L 4 1105 -640 1105 -540 {}
+L 4 1235 -640 1235 -540 {}
 L 4 1115 -190 1235 -190 {}
 L 4 1105 -190 1125 -190 {}
 L 4 1105 -320 1235 -320 {}
@@ -64,15 +64,13 @@ L 4 1235 -420 1265 -420 {}
 L 4 1260 -420 1280 -420 {}
 L 4 1265 -520 1285 -520 {}
 L 4 1280 -420 1285 -420 {}
-L 4 1230 -650 1290 -650 {}
-L 4 1230 -550 1290 -550 {}
 T {M1} 145 -470 0 0 0.3 0.3 {}
 T {M3} 145 -320 0 0 0.3 0.3 {}
 T {M2} 515 -470 0 0 0.3 0.3 {}
 T {M4} 515 -320 0 0 0.3 0.3 {}
 T {M8} -5 -640 0 0 0.3 0.3 {}
-T {M7} 1155 -650 0 0 0.3 0.3 {}
-T {M5} 670 -640 0 0 0.3 0.3 {}
+T {M7} 685 -640 0 0 0.3 0.3 {}
+T {M5} 1160 -640 0 0 0.3 0.3 {}
 T {M6} 1160 -320 0 0 0.3 0.3 {}
 T {MR} 880 -295 0 0 0.3 0.3 {}
 T {OTA} 1145 -520 0 0 0.3 0.3 {}
@@ -252,7 +250,7 @@ m=\{m_M34\}
 model=sg13_lv_nmos
 spiceprefix=X
 }
-C {sg13g2_pr/sg13_lv_pmos.sym} 500 -600 0 0 {name=M5
+C {sg13g2_pr/sg13_lv_pmos.sym} 990 -600 0 0 {name=M5
 l=\{l_M875\}
 w=\{w_M5\}
 ng=1
@@ -268,7 +266,7 @@ m=\{m_M6\}
 model=sg13_lv_nmos
 spiceprefix=X
 }
-C {sg13g2_pr/sg13_lv_pmos.sym} 990 -600 0 0 {name=M7
+C {sg13g2_pr/sg13_lv_pmos.sym} 500 -600 0 0 {name=M7
 l=\{l_M875\}
 w=\{w_M7\}
 ng=1
@@ -302,7 +300,7 @@ footprint=1206
 device="ceramic capacitor"}
 C {devices/lab_wire.sym} 880 -320 0 1 {name=l2 sig_type=std_logic lab=VSS
 }
-C {devices/lab_wire.sym} 810 -440 2 0 {name=l3 sig_type=std_logic lab=VDD
+C {devices/lab_wire.sym} 810 -440 0 1 {name=l3 sig_type=std_logic lab=VDD
 }
 C {devices/lab_wire.sym} 870 -600 0 0 {name=l1 sig_type=std_logic lab=Vibias
 }
@@ -364,25 +362,25 @@ C {ngspice_get_value.sym} 5 -570 0 1 {name=r21 node=gmM8
 descr="gm= "}
 C {ngspice_get_value.sym} 55 -595 0 1 {name=r22 node=VsdM8
 descr="Vsd= "}
-C {ngspice_get_value.sym} 1165 -605 0 1 {name=r24 node=VthM7
+C {ngspice_get_value.sym} 695 -595 0 1 {name=r24 node=VthM7
 descr="Vth= "}
-C {ngspice_get_value.sym} 1165 -580 0 1 {name=r25 node=gmM7
+C {ngspice_get_value.sym} 695 -570 0 1 {name=r25 node=gmM7
 descr="gm= "}
-C {ngspice_get_value.sym} 1215 -605 0 1 {name=r26 node=VsdM7
+C {ngspice_get_value.sym} 745 -595 0 1 {name=r26 node=VsdM7
 descr="Vsd= "}
-C {ngspice_get_value.sym} 1215 -580 0 1 {name=r27 node= VovM7
+C {ngspice_get_value.sym} 745 -570 0 1 {name=r27 node= VovM7
 descr="Vov= "}
-C {ngspice_get_value.sym} 1150 -555 0 1 {name=r28 node=VsgM7
+C {ngspice_get_value.sym} 680 -545 0 1 {name=r28 node=VsgM7
 descr="Vsg= "}
-C {ngspice_get_value.sym} 680 -595 0 1 {name=r29 node=VthM5
+C {ngspice_get_value.sym} 1170 -595 0 1 {name=r29 node=VthM5
 descr="Vth= "}
-C {ngspice_get_value.sym} 670 -570 0 1 {name=r30 node=gmM5
+C {ngspice_get_value.sym} 1160 -570 0 1 {name=r30 node=gmM5
 descr="gm= "}
-C {ngspice_get_value.sym} 730 -595 0 1 {name=r31 node=VsdM5
+C {ngspice_get_value.sym} 1220 -595 0 1 {name=r31 node=VsdM5
 descr="Vsd= "}
-C {ngspice_get_value.sym} 730 -570 0 1 {name=r32 node= VovM5
+C {ngspice_get_value.sym} 1220 -570 0 1 {name=r32 node= VovM5
 descr="Vov= "}
-C {ngspice_get_value.sym} 655 -545 0 1 {name=r33 node=VsgM5
+C {ngspice_get_value.sym} 1145 -545 0 1 {name=r33 node=VsgM5
 descr="Vsg= "}
 C {ngspice_get_value.sym} 1170 -275 0 1 {name=r34 node=VthM6
 descr="Vth= "}
@@ -394,19 +392,19 @@ C {ngspice_get_value.sym} 1220 -250 0 1 {name=r37 node= VovM6
 descr="Vov= "}
 C {ngspice_get_value.sym} 1155 -225 0 1 {name=r38 node=VgsM6
 descr="Vgs= "}
-C {ngspice_get_value.sym} 885 -250 0 1 {name=r41 node=VdsMR
+C {ngspice_get_value.sym} 895 -250 0 1 {name=r41 node=VdsMR
 descr="Vds= "}
 C {ngspice_get_value.sym} 215 -375 0 1 {name=r40 node=RoM1
 descr="Ro= "}
 C {ngspice_get_value.sym} 585 -375 0 1 {name=r42 node=RoM2
 descr="Ro= "}
-C {ngspice_get_value.sym} 1285 -605 0 1 {name=r43 node=RoM7
+C {ngspice_get_value.sym} 755 -545 0 1 {name=r43 node=RoM7
 descr="Ro= "}
 C {ngspice_get_value.sym} 575 -225 0 1 {name=r44 node=RoM4
 descr="Ro= "}
 C {ngspice_get_value.sym} 945 -250 0 1 {name=r45 node=RoMR
 descr="Ro= "}
-C {ngspice_get_value.sym} 730 -545 0 1 {name=r39 node=RoM5
+C {ngspice_get_value.sym} 1220 -545 0 1 {name=r39 node=RoM5
 descr="Ro= "}
 C {ngspice_get_value.sym} 1220 -225 0 1 {name=r46 node=RoM6
 descr="Ro= "}
@@ -416,9 +414,9 @@ C {devices/lab_wire.sym} 890 -370 0 1 {name=l8 sig_type=std_logic lab=VsMR
 }
 C {ngspice_get_value.sym} 1165 -195 0 1 {name=r19 node=CggM6
 descr="Cgg= "}
-C {ngspice_get_value.sym} 1150 -475 0 1 {name=r23 node=Av1
+C {ngspice_get_value.sym} 1140 -475 0 1 {name=r23 node=Av1
 descr="Av1= "}
-C {ngspice_get_value.sym} 1150 -450 0 1 {name=r47 node=Av2
+C {ngspice_get_value.sym} 1140 -450 0 1 {name=r47 node=Av2
 descr="Av2= "}
 C {ngspice_get_value.sym} 1140 -425 0 1 {name=r48 node=Av
 descr="Av= "}
@@ -432,7 +430,3 @@ C {ngspice_get_value.sym} 1280 -475 0 1 {name=r52 node=Rc
 descr="Rc= "}
 C {ngspice_get_value.sym} 1210 -425 0 1 {name=r53 node=DCG
 descr="DCG= "}
-C {ngspice_get_value.sym} 1285 -575 0 1 {name=r54 node=gdsM7
-descr="gds= "}
-C {ngspice_get_value.sym} 1230 -195 0 1 {name=r55 node=gdsM6
-descr="gds= "}

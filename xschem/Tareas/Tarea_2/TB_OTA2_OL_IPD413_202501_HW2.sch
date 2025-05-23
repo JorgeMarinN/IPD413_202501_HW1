@@ -293,7 +293,11 @@ value="
  *meas ac GM2 find vdb(vout) when vp(vout)=-180
  meas ac GBW WHEN vdb(VOUT)=0
  meas ac DCG find vdb(vout) at=1
+ let DCG_BW = \{DCG\} - 3
+ meas ac BW WHEN vdb(VOUT)=\{DCG_BW\}
+ 
  let Av = 10^(DCG/20)
+ print Av 
 
  plot vdb(VOUT)
  plot phase_val
@@ -408,13 +412,17 @@ reset
   let Av2 = gmM6/(gdsM5+gdsM6)
   let Av = Av1*Av2
   let BW = (gdsM2+gdsM4)/(2*pi*Av2*\{Cc\})
+  *let w1 = 1/((gdsM2+gdsM4)*gmM6*(gdsM6+gdsM7)*\{Cc\})
+  *let w22 = gmM6/(CggM6+\{Cl\})
+  let w2 = gmM6/((\{Cl\})*(1+CggM6/\{Cc\}))
   let GBW = gmM1/(2*pi*\{Cc\})
+  *let GBW2 = gmM1/\{Cc\}
   let DCG = 20*log10(Av)
   *let fnd = gmM6/(2*pi*\{Cl\})
   
   print Av1 Av2 Av DCG
-  print BW GBW 
-  print wo Rc Cc2
+  print BW GBW w2 
+  print Rc Cc2
    
   write TB_OTA2_OL_IPD413_202501_HW2.raw
 .endc
