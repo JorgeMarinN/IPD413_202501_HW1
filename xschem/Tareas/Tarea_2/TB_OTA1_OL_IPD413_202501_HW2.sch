@@ -492,4 +492,4 @@ value="
 .csparam Cc = \{Cc\}
 
 "}
-C {/workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_202501/xschem/Tareas/Tarea_2/OTA1.sym} -370 -160 0 0 {name=x1}
+C {./OTA1.sym} -370 -160 0 0 {name=x1}

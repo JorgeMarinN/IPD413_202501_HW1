@@ -1,0 +1,59 @@
+** sch_path: /home/designer/shared/IPD413_202501/xschem/Tareas/Tarea_1/cs_amp_full_FIXED_IPD413HW1.sch
+**.subckt cs_amp_full_FIXED_IPD413HW1 vout
+*.iopin vout
+I1 VDD vout 785u
+XM1 GND vg vout GND sg13_lv_nmos w=4.4u l=0.13u ng=1 m=1
+B1 net1 GND V = 0.9*(1+tanh(10000*(v(vfb)-v(vref)))) m=1
+V1 vg net1 dc 0 ac 1
+R1 vfb vout 10000000 m=1
+C2 vfb GND 10 m=1
+**** begin user architecture code
+
+.option wnflag=1
+vsup VDD 0 1.8
+vref vref 0 0.9
+
+cload vout 0 5p
+
+.control
+save all
+
+save @n.xm1.nsg13_lv_nmos[gm]
+save @n.xm1.nsg13_lv_nmos[ids]
+save @n.xm1.nsg13_lv_nmos[gds]
+
+*dc vin -0.01 0.01 0.001
+*dc vin 0.932 0.934 0.001
+
+*let gdsn = @n.xm1.nsg13_lv_nmos[gds]
+*let gmn = @n.xm1.nsg13_lv_nmos[gm]
+*let vthn = @n.xm1.nsg13_lv_nmos[vth]
+*let idn = @n.xm1.nsg13_lv_nmos[ids]
+*let ao = gmn / gdsn
+
+*plot deriv(v(vout)) vs v(vout) ao vs v(vout)
+
+ac dec 100 1 1T
+plot vdb(vout)
+
+op
+print vg
+print vout
+
+.endc
+
+
+
+.param corner=0
+
+.if (corner==0)
+.lib cornerMOSlv.lib mos_tt
+.lib cornerRES.lib res_typ
+.lib cornerCAP.lib cap_typ
+.endif
+
+**** end user architecture code
+**.ends
+.GLOBAL GND
+.GLOBAL VDD
+.end
