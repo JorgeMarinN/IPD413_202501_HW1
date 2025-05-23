@@ -1,0 +1,287 @@
+** sch_path: /home/designer/shared/IPD413_202501/xschem/Tareas/Tarea_2/TB_OTA2_OL_IPD413_202501_HW2.sch
+**.subckt TB_OTA2_OL_IPD413_202501_HW2
+VDD VDD GND {VDD}
+I0 Vibias VSS DC{ibias}
+R3 VOUT Ve 20k m=1
+V3 VCM VSS DC{VCM}
+VSS VSS GND 0
+C5 VIN VSS 3p m=1
+R2 VIN Ve 1G m=1
+R1 Ve VCM 2k m=1
+C1 VOUT net1 {Cl} m=1
+V4 vsen VCM sin(0 {VAC} {fin}) dc 0 ac 1
+C4 vsen VIN 1 m=1
+x1 VIN VCM VOUT VDD VSS Vibias OTA2_lv
+**** begin user architecture code
+
+
+*.param VDD = 3.3
+.param Ibias = 100u
+.param Pi = 3.14159265
+.param wo = 2*Pi*60Meg
+.csparam wo = {wo}
+
+*.param VCM = 0.8
+*.param VAC = 60m
+.param VAC  = 10m
+.param fin  = 9.765625e5
+
+*.ic v(Vo) = 0
+
+* OP Parameters & Singals to save
+.save all
+
+*.option temp = 125
+*.option temp = -40
+.option temp = 27
+
+
+
+
+
+.lib cornerMOShv.lib mos_tt
+.lib cornerMOSlv.lib mos_tt
+*.lib cornerMOShv.lib mos_ff
+*.lib cornerMOSlv.lib mos_ff
+*.lib cornerMOShv.lib mos_ss
+*.lib cornerMOSlv.lib mos_ss
+*.lib cornerMOShv.lib mos_sf
+*.lib cornerMOSlv.lib mos_sf
+*.lib cornerMOShv.lib mos_fs
+*.lib cornerMOSlv.lib mos_fs
+
+.include /opt/pdks/ihp-sg13g2/libs.ref/sg13g2_stdcell/spice/sg13g2_stdcell.spice
+.lib /opt/pdks/ihp-sg13g2/libs.tech/ngspice/models/cornerRES.lib res_typ
+.lib /opt/pdks/ihp-sg13g2/libs.tech/ngspice/models/cornerCAP.lib cap_typ
+*.lib /opt/pdks/ihp-sg13g2/libs.tech/ngspice/models/diodes.lib
+
+
+
+
+.control
+  set color0 = white
+  *IPD413
+ ac dec 200 1 1000Meg
+ settype decibel VOUT
+ *setplot ac1
+
+ let phase_val = (180/PI)*cph(VOUT)
+ let phase_margin_val = 180 + 180/PI*cph(VOUT)
+ settype phase phase_val
+ *meas ac PM find phase_margin_val when vdb(VOUT)=0
+ meas ac PM find phase_val when vdb(VOUT)=0
+ meas ac GM find vdb(vout) when vp(vout)=0
+ *meas ac GM2 find vdb(vout) when vp(vout)=-180
+ meas ac GBW WHEN vdb(VOUT)=0
+ meas ac DCG find vdb(vout) at=1
+ let Av = 10^(DCG/20)
+
+ plot vdb(VOUT)
+ plot phase_val
+ plot phase_val vdb(VOUT)
+
+
+ *wrdata /foss/designs/IPD413_2023_HW3_git/Data/data_phaseOTA1.dat phase_val
+ *wrdata /foss/designs/IPD413_2023_HW3_git/Data/data_VdbOTA1.dat vdb(out)
+
+ reset
+  *DACI
+  *ac dec 100 1 10G
+  *setplot ac1
+  *meas ac GBW when vdb(vout)=0
+  *meas ac DCG find vdb(vout) at=1
+  *meas ac PM find vp(vout) when vdb(vout)=0
+  *print PM*180/PI
+  *meas ac GM find vdb(vout) when vp(vout)=0
+
+  *plot vdb(vout)
+  *plot {vp(vout)*180/PI}
+  *plot vdb(vout) {vp(vout)*180/PI}
+.endc
+
+
+.end
+
+
+
+
+
+.param VDD = 1.2
+.param VCM = 0.6
+
+.control
+reset
+  op
+  setplot op1
+  unset filetype
+  * VM1
+  let VsdM1 = v(x1.VA) - v(x1.VB)
+  let VsgM1 = v(x1.VA) - v(VCM)
+  let VthM1 = @n.x1.xm1.nsg13_lv_pmos[vth]
+  let VovM1 = VsgM1 - VthM1
+  let gmM1 = @n.x1.xm1.nsg13_lv_pmos[gm]
+  let gdsM1 = @n.x1.xm1.nsg13_lv_pmos[gds]
+  let RoM1 = 1/gdsM1
+  * VM2
+  let VsdM2 = v(x1.VA) - v(x1.VC)
+  let VsgM2 = v(x1.VA) - v(VIN)
+  let VthM2 = @n.x1.xm2.nsg13_lv_pmos[vth]
+  let VovM2 = VsgM2 - VthM2
+  let gmM2 = @n.x1.xm2.nsg13_lv_pmos[gm]
+  let gdsM2 = @n.x1.xm2.nsg13_lv_pmos[gds]
+  let RoM2 = 1/gdsM2
+  * VM3
+  let VdsM3 = v(x1.VB) - v(VSS)
+  let VthM3 = @n.x1.xm3.nsg13_lv_nmos[vth]
+  let gmM3 = @n.x1.xm3.nsg13_lv_nmos[gm]
+  let gdsM3 = @n.x1.xm3.nsg13_lv_nmos[gds]
+  let RoM3 = 1/gdsM3
+  * VM4
+  let VdsM4 = v(x1.VC) - v(VSS)
+  let VgsM4 = v(x1.VB) - v(VSS)
+  let VthM4 = @n.x1.xm4.nsg13_lv_nmos[vth]
+  let VovM4 = VgsM4 - VthM4
+  let gmM4 = @n.x1.xm4.nsg13_lv_nmos[gm]
+  let gdsM4 = @n.x1.xm4.nsg13_lv_nmos[gds]
+  let RoM4 = 1/gdsM4
+  * VM5
+  let VsdM5 = v(VDD) - v(VOUT)
+  let VsgM5 = v(VDD) - v(Vibias)
+  let VthM5 = @n.x1.xm5.nsg13_lv_pmos[vth]
+  let VovM5 = VsgM5 - VthM5
+  let gmM5 = @n.x1.xm5.nsg13_lv_pmos[gm]
+  let gdsM5 = @n.x1.xm5.nsg13_lv_pmos[gds]
+  let RoM5 = 1/gdsM5
+  * VM6
+  let VdsM6 = v(VOUT) - v(VSS)
+  let VgsM6 = v(x1.VC) - v(VSS)
+  let VthM6 = @n.x1.xm6.nsg13_lv_nmos[vth]
+  let VovM6 = VgsM6 - VthM6
+  let gmM6 = @n.x1.xm6.nsg13_lv_nmos[gm]
+  let gdsM6 = @n.x1.xm6.nsg13_lv_nmos[gds]
+  let CggM6 = @n.x1.xm6.nsg13_lv_nmos[cgg]
+  let RoM6 = 1/gdsM6
+  * VM7
+  let VsdM7 = v(VDD) - v(x1.VA)
+  let VsgM7 = v(VDD) - v(Vibias)
+  let VthM7 = @n.x1.xm7.nsg13_lv_pmos[vth]
+  let VovM7 = VsgM7 - VthM7
+  let gmM7 = @n.x1.xm7.nsg13_lv_pmos[gm]
+  let gdsM7 = @n.x1.xm7.nsg13_lv_pmos[gds]
+  let RoM7 = 1/gdsM7
+  * VM8
+  let VsdM8 = v(VDD) - v(Vibias)
+  let VthM8 = @n.x1.xm8.nsg13_lv_pmos[vth]
+  let VovM8 = VsdM8 - VthM8
+  let gmM8 = @n.x1.xm8.nsg13_lv_pmos[gm]
+  let gdsM8 = @n.x1.xm8.nsg13_lv_pmos[gds]
+  let RoM8 = 1/gdsM8
+  * VMR
+  let VdsMR = v(x1.VC) - v(x1.VsMR)
+  let gdsMR = @n.x1.xm9.nsg13_lv_nmos[gds]
+  let RoMR = 1/gdsMR
+
+  let Cc2 = gmM2/{wo}
+  let Rc = 1/gmM6
+
+  let Av1 = gmM1/(gdsM2+gdsM4)
+  let Av2 = gmM6/(gdsM5+gdsM6)
+  let Av = Av1*Av2
+  let BW = (gdsM2+gdsM4)/(2*pi*Av2*{Cc})
+  let GBW = gmM1/(2*pi*{Cc})
+  let DCG = 20*log10(Av)
+  *let fnd = gmM6/(2*pi*{Cl})
+
+  print Av1 Av2 Av DCG
+  print BW GBW
+  print wo Rc Cc2
+
+  write TB_OTA2_OL_IPD413_202501_HW2.raw
+.endc
+
+.end
+
+
+
+
+.param temp=27
+
+.param m_M8 = 200
+.param m_M7 = 18
+.param m_M5 = 4500
+.param w_M8 =1u
+.param w_M7 =1u
+.param w_M5 =1u
+.param l_M875 = 1u
+
+.param m_M12 = 3
+.param w_M12 =1u
+.param l_M12 = 1u
+
+.param m_M34 = 4
+.param w_M34 =1u
+.param l_M34 = 9u
+
+.param m_M6 = 420
+.param w_M6 =1u
+.param l_M6 = 1u
+
+.param m_R = 1
+*.param w_R =10u
+.param w_R = 0.15u
+.param l_R = 0.13u
+
+*.param Cc = 0.1p
+.param Cc = 0.4p
+.param Cl = 20p
+.csparam Cl = {Cl}
+.csparam Cc = {Cc}
+
+
+
+
+
+
+**** end user architecture code
+**.ends
+
+* expanding   symbol:  ./OTA2_lv.sym # of pins=6
+** sym_path: /home/designer/shared/IPD413_202501/xschem/Tareas/Tarea_2/OTA2_lv.sym
+** sch_path: /home/designer/shared/IPD413_202501/xschem/Tareas/Tarea_2/OTA2_lv.sch
+.subckt OTA2_lv IN_N IN_P OUT VDD VSS Vibias
+*.ipin IN_N
+*.ipin IN_P
+*.ipin Vibias
+*.opin OUT
+*.iopin VDD
+*.iopin VSS
+XM1 VB IN_N net1 VA sg13_lv_pmos w={w_M12} l={l_M12} ng=1 m={m_M12}
+XM3 VB VB VSS VSS sg13_lv_nmos w={w_M34} l={l_M34} ng=1 m={m_M34}
+XM2 VC IN_P net2 VA sg13_lv_pmos w={w_M12} l={l_M12} ng=1 m={m_M12}
+XM4 net6 VB VSS VSS sg13_lv_nmos w={w_M34} l={l_M34} ng=1 m={m_M34}
+XM5 net5 Vibias VDD VDD sg13_lv_pmos w={w_M5} l={l_M875} ng=1 m={m_M5}
+XM6 net3 VC VSS VSS sg13_lv_nmos w={w_M6} l={l_M6} ng=1 m={m_M6}
+XM7 net7 Vibias VDD VDD sg13_lv_pmos w={w_M7} l={l_M875} ng=1 m={m_M7}
+XM8 net8 Vibias VDD VDD sg13_lv_pmos w={w_M8} l={l_M875} ng=1 m={m_M8}
+XM9 VC VDD VsMR VSS sg13_lv_nmos w={w_R} l={l_R} ng=1 m={m_R}
+C1 VsMR net4 {Cc} m=1
+Vmeas VA net1 0
+.save i(vmeas)
+Vmeas1 VC net6 0
+.save i(vmeas1)
+Vmeas2 VA net2 0
+.save i(vmeas2)
+Vmeas3 net4 net3 0
+.save i(vmeas3)
+Vmeas4 net5 net4 0
+.save i(vmeas4)
+Vmeas5 net7 VA 0
+.save i(vmeas5)
+Vmeas6 net8 Vibias 0
+.save i(vmeas6)
+Vmeas7 net4 OUT 0
+.save i(vmeas7)
+.ends
+
+.GLOBAL GND
+.end

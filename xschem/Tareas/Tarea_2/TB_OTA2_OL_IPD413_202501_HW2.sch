@@ -325,7 +325,7 @@ value="
 
 .end
 "}
-C {/workspaces/usm-vlsi-tools/shared_xserver/simulations/Projects/IHP/IPD413_202501/xschem/Tareas/Tarea_2/OTA2_lv.sym} -370 -160 0 0 {name=x1}
+C {./OTA2_lv.sym} -370 -160 0 0 {name=x1}
 C {devices/code.sym} -1155 -265 0 0 {name=OP_sim_lv only_toplevel=false spice_ignore=0
 
 value="
@@ -464,7 +464,7 @@ value="
 .csparam Cc = \{Cc\}
 
 "}
-C {code.sym} -1140 -420 0 0 {name=MillerOTA_Param1 only_toplevel=false spice_ignore=0
+C {code.sym} -1140 -420 0 0 {name=MillerOTA_Param1 only_toplevel=true
 
 value="
 .param temp=27
