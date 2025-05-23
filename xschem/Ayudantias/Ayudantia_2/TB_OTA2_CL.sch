@@ -425,7 +425,7 @@ value="
 .csparam Cc = \{Cc\}
 
 "}
-C {code.sym} -1130 -420 0 0 {name=MillerOTA_Param2 only_toplevel=false spice_ignore=0
+C {code.sym} -1130 -420 0 0 {name=MillerOTA_Param2 only_toplevel=false spice_ignore=1
 
 value="
 .param temp=27
@@ -433,6 +433,41 @@ value="
 .param m_M8 = 500
 .param m_M7 = 40
 .param m_M5 = 11000
+.param w_M8 =0.5u 
+.param w_M7 =0.5u
+.param w_M5 =0.5u
+.param l_M875 = 1u
+
+.param m_M12 = 40
+.param w_M12 =0.3u
+.param l_M12 = 0.3u
+
+.param m_M34 = 1
+.param w_M34 =0.15u 
+.param l_M34 = 0.5u
+
+.param m_M6 = 10
+.param w_M6 =10u 
+.param l_M6 = 0.13u
+
+.param m_R = 1
+.param w_R =0.15u 
+.param l_R = 0.13u
+
+.param Cc = 0.1p
+.param Cl = 20p
+.csparam Cl = \{Cl\}
+.csparam Cc = \{Cc\}
+
+"}
+C {code.sym} -610 -650 0 0 {name=MillerOTA_60MHz60dB only_toplevel=false spice_ignore=0
+
+value="
+.param temp=27
+
+.param m_M8 = 500
+.param m_M5 = 40
+.param m_M7 = 11000
 .param w_M8 =0.5u 
 .param w_M7 =0.5u
 .param w_M5 =0.5u

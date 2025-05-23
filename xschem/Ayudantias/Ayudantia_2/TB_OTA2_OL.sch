@@ -503,7 +503,7 @@ value="
 .csparam Cc = \{Cc\}
 
 "}
-C {code.sym} -550 -640 0 0 {name=MillerOTA_60MHz60dB only_toplevel=false spice_ignore=1
+C {code.sym} -550 -640 0 0 {name=MillerOTA_60MHz60dB only_toplevel=false spice_ignore=0
 
 value="
 .param temp=27
@@ -538,7 +538,7 @@ value="
 .csparam Cc = \{Cc\}
 
 "}
-C {code.sym} -1120 -420 0 0 {name=MillerOTA_Tarea2 only_toplevel=false spice_ignore=0
+C {code.sym} -1120 -420 0 0 {name=MillerOTA_Tarea2 only_toplevel=false spice_ignore=1
 
 value="
 .param temp=27

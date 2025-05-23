@@ -138,10 +138,6 @@ N 680 -370 780 -370 {
 lab=VC}
 N 780 -230 970 -230 {
 lab=VC}
-N 810 -440 810 -410 {
-lab=VDD}
-N 810 -320 880 -320 {
-lab=VSS}
 N 870 -600 970 -600 {
 lab=Vibias}
 N 360 -290 410 -290 {
@@ -194,8 +190,6 @@ N 1010 -200 1010 -160 {
 lab=VSS}
 N 710 -160 1010 -160 {
 lab=VSS}
-N 810 -370 810 -320 {
-lab=VSS}
 N 1010 -440 1010 -370 {
 lab=#net4}
 N 1010 -570 1010 -450 {
@@ -212,10 +206,18 @@ N 640 -230 640 -200 {
 lab=VB}
 N 410 -230 410 -200 {
 lab=VB}
-N 840 -370 930 -370 {
-lab=VsMR}
 N 990 -370 1010 -370 {
 lab=#net4}
+N 780 -370 820 -370 {
+lab=VC}
+N 880 -370 930 -370 {
+lab=#net6}
+N 850 -450 850 -410 {
+lab=VDD}
+N 850 -370 850 -340 {
+lab=VSS}
+N 850 -340 900 -340 {
+lab=VSS}
 C {devices/ipin.sym} 290 -410 0 0 {name=p2 lab=IN_N
 }
 C {devices/ipin.sym} 730 -410 0 1 {name=p1 lab=IN_P}
@@ -287,7 +289,8 @@ spiceprefix=X
 C {opin.sym} 1160 -370 0 0 {name=p6 lab=OUT}
 C {iopin.sym} 610 -670 2 0 {name=p3 lab=VDD}
 C {iopin.sym} 520 -110 2 0 {name=p4 lab=VSS}
-C {sg13g2_pr/sg13_lv_nmos.sym} 810 -390 1 0 {name=M9
+C {sg13g2_pr/sg13_lv_nmos.sym} 850 -390 1 0 {spice_ignore=0
+name=M9
 l=\{l_R\}
 w=\{w_R\}
 ng=1
@@ -300,10 +303,6 @@ m=1
 value=\{Cc\}
 footprint=1206
 device="ceramic capacitor"}
-C {devices/lab_wire.sym} 880 -320 0 1 {name=l2 sig_type=std_logic lab=VSS
-}
-C {devices/lab_wire.sym} 810 -440 2 0 {name=l3 sig_type=std_logic lab=VDD
-}
 C {devices/lab_wire.sym} 870 -600 0 0 {name=l1 sig_type=std_logic lab=Vibias
 }
 C {ammeter.sym} 360 -480 0 1 {name=Vmeas savecurrent=true spice_ignore=0}
@@ -412,8 +411,6 @@ C {ngspice_get_value.sym} 1220 -225 0 1 {name=r46 node=RoM6
 descr="Ro= "}
 C {devices/lab_wire.sym} 330 -600 0 0 {name=l7 sig_type=std_logic lab=Vibias
 }
-C {devices/lab_wire.sym} 890 -370 0 1 {name=l8 sig_type=std_logic lab=VsMR
-}
 C {ngspice_get_value.sym} 1165 -195 0 1 {name=r19 node=CggM6
 descr="Cgg= "}
 C {ngspice_get_value.sym} 1150 -475 0 1 {name=r23 node=Av1
@@ -436,3 +433,7 @@ C {ngspice_get_value.sym} 1285 -575 0 1 {name=r54 node=gdsM7
 descr="gds= "}
 C {ngspice_get_value.sym} 1230 -195 0 1 {name=r55 node=gdsM6
 descr="gds= "}
+C {devices/lab_wire.sym} 850 -450 0 0 {name=l2 sig_type=std_logic lab=VDD
+}
+C {devices/lab_wire.sym} 900 -340 2 0 {name=l3 sig_type=std_logic lab=VSS
+}
